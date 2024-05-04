@@ -76,22 +76,32 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       if (user.docs.isNotEmpty) {
         final userPass = user.docs.first.data()['password'];
         if (userPass == event.password) {
-          // Use the email and password entered by the user
           await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email:
-                user.docs.first.data()['email'], // Use the email from Firestore
-            password: event.password, // Use the password entered by the user
+            email: user.docs.first.data()['email'],
+            password: event.password,
           );
           emit(state.copyWith(registerStatus: RegisterStatus.completed));
         } else {
-          emit(state.copyWith(registerStatus: RegisterStatus.error));
+          emit(state.copyWith(
+              error: 'Wrong Password!', registerStatus: RegisterStatus.error));
         }
+        log('User ID: ${user.docs.first.id}');
+      } else {
+        emit(
+          state.copyWith(
+            error: 'User Not Found!',
+            registerStatus: RegisterStatus.error,
+          ),
+        );
       }
-
-      log('what is this: ${user.docs.first.data()['id']}');
     } on FirebaseFirestore catch (e) {
       log('Error to Login: $e');
-      emit(state.copyWith(registerStatus: RegisterStatus.error));
+      emit(
+        state.copyWith(
+          error: 'Error to Login: $e',
+          registerStatus: RegisterStatus.error,
+        ),
+      );
     }
   }
 }

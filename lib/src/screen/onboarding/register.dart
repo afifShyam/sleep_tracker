@@ -32,7 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ..showSnackBar(
               SnackBar(
                 content: Text(
-                  'Error caught...',
+                  state.error,
                   style: TextStyle(color: STColor.white, fontSize: 16.sp),
                 ),
               ),
