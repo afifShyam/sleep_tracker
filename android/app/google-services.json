@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "793896130228",
+    "project_id": "insomnia-project-e20be",
+    "storage_bucket": "insomnia-project-e20be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793896130228:android:7d5d31305de9a2f059a9e1",
+        "android_client_info": {
+          "package_name": "com.example.sleep_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSiq4BWOdxIiGg727Z6GkKJP-CdgzThj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
