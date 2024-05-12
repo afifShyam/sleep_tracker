@@ -17,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RegisterBloc, RegisterState>(
+    return BlocConsumer<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state.registerStatus == RegisterStatus.error) {
           ScaffoldMessenger.of(context)
@@ -35,87 +35,89 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.of(context).pushNamed(HomepageRoute.bottomRoute);
         }
       },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Container(
-              height: MediaQuery.of(context).size.longestSide,
-              color: STColor.darkBlueBackground,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20.h),
-                      bottomRight: Radius.circular(20.h),
+      builder: (context, state) {
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Container(
+                height: MediaQuery.of(context).size.longestSide,
+                color: STColor.darkBlueBackground,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20.h),
+                        bottomRight: Radius.circular(20.h),
+                      ),
+                      child: Image.asset('assets/images/lognBG.jpeg'),
                     ),
-                    child: Image.asset('assets/images/lognBG.jpeg'),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 100.h, 16.w, 40.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Welcome Back!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 16.h),
-                        _buildTextField(
-                          controller: _usernameController,
-                          labelText: 'Username',
-                        ),
-                        SizedBox(height: 16.h),
-                        _buildTextField(
-                          controller: _passwordController,
-                          labelText: 'Password',
-                          obscureText: true,
-                        ),
-                        SizedBox(height: 26.h),
-                        _buildLoginButton(),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Text.rich(
-                      TextSpan(
-                        text: 'Don\'t have an account? ',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.sp,
-                        ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(16.w, 100.h, 16.w, 40.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextSpan(
-                            text: 'Sign Up',
+                          Text(
+                            'Welcome Back!',
                             style: TextStyle(
-                              color: STColor.icognitoBg,
-                              fontSize: 16.sp,
+                              color: Colors.white,
+                              fontSize: 24.sp,
                               fontWeight: FontWeight.bold,
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.of(context).pushNamed(
-                                  HomepageRoute.registerRoute,
-                                );
-                              },
                           ),
+                          SizedBox(height: 16.h),
+                          _buildTextField(
+                            controller: _usernameController,
+                            labelText: 'Username',
+                          ),
+                          SizedBox(height: 16.h),
+                          _buildTextField(
+                            controller: _passwordController,
+                            labelText: 'Password',
+                            obscureText: true,
+                          ),
+                          SizedBox(height: 26.h),
+                          _buildLoginButton(),
                         ],
                       ),
                     ),
-                  )
-                ],
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text.rich(
+                        TextSpan(
+                          text: 'Don\'t have an account? ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.sp,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Sign Up',
+                              style: TextStyle(
+                                color: STColor.icognitoBg,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context).pushNamed(
+                                    HomepageRoute.registerRoute,
+                                  );
+                                },
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

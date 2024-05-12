@@ -23,3 +23,7 @@ class UserLogin extends RegisterEvent {
     required this.username,
   });
 }
+
+class UserLogout extends RegisterEvent {}
+
+class UserIsSigned extends RegisterEvent {}

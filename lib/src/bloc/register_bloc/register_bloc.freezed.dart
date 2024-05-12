@@ -21,8 +21,10 @@ RegisterState _$RegisterStateFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$RegisterState {
   RegisterStatus get registerStatus => throw _privateConstructorUsedError;
+  UserLogged get loggedUser => throw _privateConstructorUsedError;
   String get error => throw _privateConstructorUsedError;
   UserModel get user => throw _privateConstructorUsedError;
+  bool get profileLogout => throw _privateConstructorUsedError;
   @JsonKey(
       fromJson: _fromJsonDocumentReference, toJson: _toJsonDocumentReference)
   DocumentReference<Object?>? get newData => throw _privateConstructorUsedError;
@@ -41,8 +43,10 @@ abstract class $RegisterStateCopyWith<$Res> {
   @useResult
   $Res call(
       {RegisterStatus registerStatus,
+      UserLogged loggedUser,
       String error,
       UserModel user,
+      bool profileLogout,
       @JsonKey(
           fromJson: _fromJsonDocumentReference,
           toJson: _toJsonDocumentReference)
@@ -65,8 +69,10 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
   @override
   $Res call({
     Object? registerStatus = null,
+    Object? loggedUser = null,
     Object? error = null,
     Object? user = null,
+    Object? profileLogout = null,
     Object? newData = freezed,
   }) {
     return _then(_value.copyWith(
@@ -74,6 +80,10 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
           ? _value.registerStatus
           : registerStatus // ignore: cast_nullable_to_non_nullable
               as RegisterStatus,
+      loggedUser: null == loggedUser
+          ? _value.loggedUser
+          : loggedUser // ignore: cast_nullable_to_non_nullable
+              as UserLogged,
       error: null == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -82,6 +92,10 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as UserModel,
+      profileLogout: null == profileLogout
+          ? _value.profileLogout
+          : profileLogout // ignore: cast_nullable_to_non_nullable
+              as bool,
       newData: freezed == newData
           ? _value.newData
           : newData // ignore: cast_nullable_to_non_nullable
@@ -108,8 +122,10 @@ abstract class _$$RegisterStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {RegisterStatus registerStatus,
+      UserLogged loggedUser,
       String error,
       UserModel user,
+      bool profileLogout,
       @JsonKey(
           fromJson: _fromJsonDocumentReference,
           toJson: _toJsonDocumentReference)
@@ -131,8 +147,10 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? registerStatus = null,
+    Object? loggedUser = null,
     Object? error = null,
     Object? user = null,
+    Object? profileLogout = null,
     Object? newData = freezed,
   }) {
     return _then(_$RegisterStateImpl(
@@ -140,6 +158,10 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
           ? _value.registerStatus
           : registerStatus // ignore: cast_nullable_to_non_nullable
               as RegisterStatus,
+      loggedUser: null == loggedUser
+          ? _value.loggedUser
+          : loggedUser // ignore: cast_nullable_to_non_nullable
+              as UserLogged,
       error: null == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -148,6 +170,10 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as UserModel,
+      profileLogout: null == profileLogout
+          ? _value.profileLogout
+          : profileLogout // ignore: cast_nullable_to_non_nullable
+              as bool,
       newData: freezed == newData
           ? _value.newData
           : newData // ignore: cast_nullable_to_non_nullable
@@ -161,8 +187,10 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
 class _$RegisterStateImpl extends _RegisterState {
   _$RegisterStateImpl(
       {required this.registerStatus,
+      required this.loggedUser,
       required this.error,
       required this.user,
+      required this.profileLogout,
       @JsonKey(
           fromJson: _fromJsonDocumentReference,
           toJson: _toJsonDocumentReference)
@@ -175,9 +203,13 @@ class _$RegisterStateImpl extends _RegisterState {
   @override
   final RegisterStatus registerStatus;
   @override
+  final UserLogged loggedUser;
+  @override
   final String error;
   @override
   final UserModel user;
+  @override
+  final bool profileLogout;
   @override
   @JsonKey(
       fromJson: _fromJsonDocumentReference, toJson: _toJsonDocumentReference)
@@ -185,7 +217,7 @@ class _$RegisterStateImpl extends _RegisterState {
 
   @override
   String toString() {
-    return 'RegisterState(registerStatus: $registerStatus, error: $error, user: $user, newData: $newData)';
+    return 'RegisterState(registerStatus: $registerStatus, loggedUser: $loggedUser, error: $error, user: $user, profileLogout: $profileLogout, newData: $newData)';
   }
 
   @override
@@ -195,15 +227,19 @@ class _$RegisterStateImpl extends _RegisterState {
             other is _$RegisterStateImpl &&
             (identical(other.registerStatus, registerStatus) ||
                 other.registerStatus == registerStatus) &&
+            (identical(other.loggedUser, loggedUser) ||
+                other.loggedUser == loggedUser) &&
             (identical(other.error, error) || other.error == error) &&
             (identical(other.user, user) || other.user == user) &&
+            (identical(other.profileLogout, profileLogout) ||
+                other.profileLogout == profileLogout) &&
             (identical(other.newData, newData) || other.newData == newData));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, registerStatus, error, user, newData);
+  int get hashCode => Object.hash(runtimeType, registerStatus, loggedUser,
+      error, user, profileLogout, newData);
 
   @JsonKey(ignore: true)
   @override
@@ -222,8 +258,10 @@ class _$RegisterStateImpl extends _RegisterState {
 abstract class _RegisterState extends RegisterState {
   factory _RegisterState(
       {required final RegisterStatus registerStatus,
+      required final UserLogged loggedUser,
       required final String error,
       required final UserModel user,
+      required final bool profileLogout,
       @JsonKey(
           fromJson: _fromJsonDocumentReference,
           toJson: _toJsonDocumentReference)
@@ -236,9 +274,13 @@ abstract class _RegisterState extends RegisterState {
   @override
   RegisterStatus get registerStatus;
   @override
+  UserLogged get loggedUser;
+  @override
   String get error;
   @override
   UserModel get user;
+  @override
+  bool get profileLogout;
   @override
   @JsonKey(
       fromJson: _fromJsonDocumentReference, toJson: _toJsonDocumentReference)

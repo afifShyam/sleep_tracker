@@ -3,24 +3,20 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:sleep_tracker/src/index.dart';
 
-class HomepageRoute implements ManagerRouter {
-  HomepageRoute();
+class ProfileRoute implements ManagerRouter {
+  ProfileRoute();
 
-  static const homeRoute = 'home';
+  static const profileRoute = 'profile';
 
-  static const splashscreenRoute = '$homeRoute/splashscreen';
-  static const bottomRoute = '$homeRoute/bottomNavbar';
-  static const mainpageRoute = '$homeRoute/mainpage';
-  static const loginRoute = '$homeRoute/login';
-  static const registerRoute = '$homeRoute/register';
-  static const logout = '$homeRoute/logout';
+  static const dashProfileRoute = '$profileRoute/dashboard_profile';
+  static const editProfileRoute = '$profileRoute/edit_profile';
 
   final List<String> routeHistory = [];
 
   @override
   void addRoute(String route) {
     routeHistory.add(route);
-    log('route inisiatif add history: $routeHistory');
+    log('route profile add history: $routeHistory');
   }
 
   @override
@@ -60,30 +56,25 @@ class HomepageRoute implements ManagerRouter {
     log('route in inisiatif routeName: ${settings.name!}');
     log('route in inisiatif object: ${settings.arguments}');
 
-    if (!settings.name!.contains(homeRoute)) {
+    if (!settings.name!.contains(profileRoute)) {
       return RoutesHandler.handler(settings);
     }
 
     addRoute(settings.name!);
     // final List<String> route = settings.name!.split('/');
     Widget page = const PageNotFound();
-    if (settings.name!.contains(logout)) {
-      page = const LoginPage();
-    }
     switch (settings.name!) {
-      case splashscreenRoute:
-        page = const SplashScreen();
+      case dashProfileRoute:
+        page = const Profile();
         break;
-      case loginRoute:
-        page = const LoginPage();
-      case registerRoute:
-        page = const RegisterPage();
-      case bottomRoute:
-        page = const BottomNavBar();
-      case mainpageRoute:
-        page = const HomePage();
+      case editProfileRoute:
+        final dynamic args = settings.arguments;
+        page = EditProfilePage(
+          user: args['user'],
+        );
+        break;
       default:
-        page = const SplashScreen();
+        page = const Profile();
     }
 
     return MaterialPageRoute<dynamic>(

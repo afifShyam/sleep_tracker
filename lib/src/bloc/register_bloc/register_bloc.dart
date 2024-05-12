@@ -17,17 +17,28 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   RegisterBloc() : super(RegisterState.initial()) {
     on<UserRegister>(_userRegister);
     on<UserLogin>(_userLogin);
+    on<UserLogout>(_userLogout);
+    on<UserIsSigned>(_isSigned);
   }
 
   Future<void> _userRegister(UserRegister event, Emitter emit) async {
     try {
       emit(state.copyWith(registerStatus: RegisterStatus.loading));
 
-      final docRef = FirebaseFirestore.instance.collection('users').doc();
+      final auth = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: event.email,
+        password: event.password,
+      );
+
+      final id = auth.user!.uid;
+
+      log('what isss $id');
+
+      final docRef = FirebaseFirestore.instance.collection('users').doc(id);
 
       await docRef.set(
         UserModel(
-          id: docRef.id,
+          id: id,
           username: event.username,
           email: event.email,
           password: event.password,
@@ -35,13 +46,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       );
 
       final user = UserModel(
-        id: docRef.id,
+        id: id,
         username: event.username,
-        email: event.email,
-        password: event.password,
-      );
-
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: event.email,
         password: event.password,
       );
@@ -53,8 +59,23 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           registerStatus: RegisterStatus.completed,
         ),
       );
-    } on FirebaseFirestore catch (e) {
-      log('User Register Error : $e');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        emit(
+          state.copyWith(
+            error: 'your password is weak',
+            registerStatus: RegisterStatus.error,
+          ),
+        );
+      } else if (e.code == 'email-already-in-use') {
+        emit(
+          state.copyWith(
+            error: 'The account already exists for that email.',
+            registerStatus: RegisterStatus.error,
+          ),
+        );
+      }
+    } catch (e) {
       emit(
         state.copyWith(
           error: 'User Register Error : $e',
@@ -85,7 +106,6 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           emit(state.copyWith(
               error: 'Wrong Password!', registerStatus: RegisterStatus.error));
         }
-        log('User ID: ${user.docs.first.id}');
       } else {
         emit(
           state.copyWith(
@@ -100,6 +120,61 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           error: 'Error to Login: $e',
           registerStatus: RegisterStatus.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _userLogout(UserLogout event, Emitter emit) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+
+      emit(
+        state.copyWith(
+          loggedUser: UserLogged.signedOut,
+          profileLogout: true,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          error: 'Error to Logout',
+        ),
+      );
+    }
+    // await FirebaseAuth.instance.signOut().whenComplete(() {
+    //   emit(
+    //     state.copyWith(
+    //       loggedUser: UserLogged.signedOut,
+    //       profileLogout: true,
+    //     ),
+    //   );
+
+    //   log('message');
+    // }).catchError(
+    //   (e) => emit(
+    //     state.copyWith(
+    //       error: 'Error to Logout',
+    //     ),
+    //   ),
+    // );
+  }
+
+  void _isSigned(UserIsSigned event, Emitter emit) {
+    try {
+      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        if (user == null) {
+          emit(state.copyWith(loggedUser: UserLogged.signedOut));
+        } else {
+          emit(state.copyWith(loggedUser: UserLogged.signedIn));
+        }
+      });
+    } on FirebaseAuthException catch (e) {
+      log('Error to IsSigned $e');
+      emit(
+        state.copyWith(
+          error: 'Error caught from IsSigned',
+          loggedUser: UserLogged.errorSign,
         ),
       );
     }

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_annotation_target
+
 part of 'register_bloc.dart';
 
 enum RegisterStatus {
@@ -5,6 +7,12 @@ enum RegisterStatus {
   loading,
   completed,
   error,
+}
+
+enum UserLogged {
+  signedIn,
+  signedOut,
+  errorSign,
 }
 
 // Factory method to convert JSON string to DocumentReference
@@ -24,8 +32,10 @@ String? _toJsonDocumentReference(DocumentReference? docRef) {
 class RegisterState with _$RegisterState {
   factory RegisterState({
     required final RegisterStatus registerStatus,
+    required final UserLogged loggedUser,
     required final String error,
     required final UserModel user,
+    required final bool profileLogout,
     @JsonKey(
         fromJson: _fromJsonDocumentReference, toJson: _toJsonDocumentReference)
     final DocumentReference? newData,
@@ -37,6 +47,8 @@ class RegisterState with _$RegisterState {
         registerStatus: RegisterStatus.initial,
         error: '',
         user: UserModel.initial(),
+        loggedUser: UserLogged.signedOut,
+        profileLogout: false,
       );
 
   factory RegisterState.fromJson(Map<String, dynamic> json) =>
