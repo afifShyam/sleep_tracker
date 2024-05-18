@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -21,14 +20,14 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
 
   Future<void> _getData(GetData event, Emitter emit) async {
     try {
-      emit(state.copyWith(profileStatus: ProfileStatus.loading));
-
       final user = await FirebaseFirestore.instance
           .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .doc(GetDataFireBase.currentUserId)
           .get();
 
       if (user.exists) {
+        emit(state.copyWith(profileStatus: ProfileStatus.loading));
+
         emit(
           state.copyWith(
             profileModel: ProfileModel(
@@ -42,6 +41,9 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
             ),
           ),
         );
+        emit(state.copyWith(
+          profileStatus: ProfileStatus.completed,
+        ));
       }
     } catch (e) {
       emit(
@@ -58,7 +60,7 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
 
       final user = FirebaseFirestore.instance
           .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid);
+          .doc(GetDataFireBase.currentUserId);
 
       user.update(
         ProfileModel(
@@ -75,6 +77,8 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
       emit(
         state.copyWith(profileStatus: ProfileStatus.updated),
       );
+
+      add(GetData(id: GetDataFireBase.currentUserId));
     } catch (e) {
       emit(
         state.copyWith(
@@ -90,7 +94,8 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
       Reference ref = FirebaseStorage.instance
           .ref()
           .child('profile_image')
-          .child(FirebaseAuth.instance.currentUser!.uid);
+          .child(GetDataFireBase.currentUserId);
+      emit(state.copyWith(profileStatus: ProfileStatus.loading));
 
       await ref.putFile(imageFile);
       final selectedImage = await ref.getDownloadURL();

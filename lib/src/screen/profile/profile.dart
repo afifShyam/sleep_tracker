@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +26,8 @@ class _ProfileState extends State<Profile> {
       listener: (context, state) {
         if (state.loggedUser == UserLogged.signedOut) {
           // Perform navigation logic upon logout
-          // Navigator.of(context).pushReplacementNamed(HomepageRoute.mainpageRoute);
+          Navigator.of(context, rootNavigator: true)
+              .pushReplacementNamed(HomepageRoute.loginRoute);
         }
       },
       builder: (context, state) => BlocBuilder<ProfileBloc, ProfileState>(
@@ -71,6 +70,8 @@ class _ProfileState extends State<Profile> {
                             icon: const Icon(Icons.edit, color: STColor.white),
                           ),
                         ),
+                        if (profileData.profileStatus == ProfileStatus.loading)
+                          const CircularProgressIndicator.adaptive()
                       ],
                     ),
                     SizedBox(height: 20.h), // Add space between image and text

@@ -24,153 +24,165 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RegisterBloc, RegisterState>(
-      listener: (context, state) {
-        if (state.registerStatus == RegisterStatus.error) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Error caught...',
-                  style: TextStyle(color: STColor.white, fontSize: 16.sp),
-                ),
-              ),
-            );
-        }
-        if (state.registerStatus == RegisterStatus.completed) {
-          Navigator.of(context).pushNamed(HomepageRoute.bottomRoute);
-        }
-      },
-      child: Scaffold(
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            color: STColor.darkYellow,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-              child: Form(
-                key: _formKey, // Assign the form key
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 150.h,
-                      width: 150.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/images/register_logo.jpeg'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-                    Text(
-                      'Register',
-                      style: TextStyle(
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.bold,
-                        color: STColor.white,
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-                    _buildTextField(
-                      controller: _usernameController,
-                      labelText: 'Username',
-                      passType: false,
-                    ),
-                    SizedBox(height: 12.h),
-                    _buildTextField(
-                      controller: _emailController,
-                      labelText: 'Email',
-                      keyboardType: TextInputType.emailAddress,
-                      passType: false,
-                    ),
-                    SizedBox(height: 12.h),
-                    _buildTextField(
-                      controller: _passwordController,
-                      labelText: 'Password',
-                      obscureText: _obscureTextPass,
-                      toggleVisibility: () {
-                        setState(() {
-                          _obscureTextPass = !_obscureTextPass;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 12.h),
-                    _buildTextField(
-                      controller: _confirmPasswordController,
-                      labelText: 'Confirm Password',
-                      obscureText: _obscureTextConfirmPass,
-                      validator: (value) {
-                        if (value != _passwordController.text) {
-                          return 'Passwords do not match';
-                        }
-                        return null;
-                      },
-                      toggleVisibility: () {
-                        setState(() {
-                          _obscureTextConfirmPass = !_obscureTextConfirmPass;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 20.h),
-                    ElevatedButton(
-                      onPressed:
-                          _onRegisterPressed, //_isButtonEnabled() ? _onRegisterPressed : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: STColor.darkBlueBackground,
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        minimumSize: Size(double.infinity, 55.h),
-                      ),
-                      child: Text(
-                        'Register',
-                        style: TextStyle(
-                          color: STColor.white,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    Text.rich(TextSpan(
-                      text: 'Already have an account? ',
-                      style: TextStyle(
-                        color: STColor.white,
-                        fontSize: 16.sp,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: 'Login',
-                          style: TextStyle(
-                            color: STColor.red,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              HomepageStartPage.of(context).exitUntill(
-                                context,
-                                routeName: HomepageRoute.loginRoute,
-                              );
-                            },
-                        ),
-                      ],
-                    ))
-                  ],
-                ),
+    return BlocConsumer<RegisterBloc, RegisterState>(
+        listener: (context, state) {
+      if (state.registerStatus == RegisterStatus.error) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(
+                'Error caught...',
+                style: TextStyle(color: STColor.white, fontSize: 16.sp),
               ),
             ),
+          );
+      }
+      if (state.registerStatus == RegisterStatus.completed) {
+        Navigator.of(context).pushNamed(HomepageRoute.bottomRoute);
+      }
+    }, builder: (context, state) {
+      return Scaffold(
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Stack(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height,
+                color: STColor.darkYellow,
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+                  child: Form(
+                    key: _formKey, // Assign the form key
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 150.h,
+                          width: 150.w,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            image: const DecorationImage(
+                              image: AssetImage(
+                                  'assets/images/register_logo.jpeg'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        Text(
+                          'Register',
+                          style: TextStyle(
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.bold,
+                            color: STColor.white,
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        _buildTextField(
+                          controller: _usernameController,
+                          labelText: 'Username',
+                          passType: false,
+                        ),
+                        SizedBox(height: 12.h),
+                        _buildTextField(
+                          controller: _emailController,
+                          labelText: 'Email',
+                          keyboardType: TextInputType.emailAddress,
+                          passType: false,
+                        ),
+                        SizedBox(height: 12.h),
+                        _buildTextField(
+                          controller: _passwordController,
+                          labelText: 'Password',
+                          obscureText: _obscureTextPass,
+                          toggleVisibility: () {
+                            setState(() {
+                              _obscureTextPass = !_obscureTextPass;
+                            });
+                          },
+                        ),
+                        SizedBox(height: 12.h),
+                        _buildTextField(
+                          controller: _confirmPasswordController,
+                          labelText: 'Confirm Password',
+                          obscureText: _obscureTextConfirmPass,
+                          validator: (value) {
+                            if (value != _passwordController.text) {
+                              return 'Passwords do not match';
+                            }
+                            return null;
+                          },
+                          toggleVisibility: () {
+                            setState(() {
+                              _obscureTextConfirmPass =
+                                  !_obscureTextConfirmPass;
+                            });
+                          },
+                        ),
+                        SizedBox(height: 20.h),
+                        ElevatedButton(
+                          onPressed:
+                              _onRegisterPressed, //_isButtonEnabled() ? _onRegisterPressed : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: STColor.darkBlueBackground,
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            minimumSize: Size(double.infinity, 55.h),
+                          ),
+                          child: Text(
+                            'Register',
+                            style: TextStyle(
+                              color: STColor.white,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30.h,
+                        ),
+                        Text.rich(TextSpan(
+                          text: 'Already have an account? ',
+                          style: TextStyle(
+                            color: STColor.white,
+                            fontSize: 16.sp,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Login',
+                              style: TextStyle(
+                                color: STColor.red,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  HomepageStartPage.of(context).exitUntill(
+                                    context,
+                                    routeName: HomepageRoute.loginRoute,
+                                  );
+                                },
+                            ),
+                          ],
+                        ))
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: state.registerStatus == RegisterStatus.loading,
+                child:
+                    const Center(child: CircularProgressIndicator.adaptive()),
+              )
+            ],
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildTextField({
