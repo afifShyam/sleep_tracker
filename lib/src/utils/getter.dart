@@ -69,15 +69,4 @@ class FirestoreService {
       }).toList();
     });
   }
-
-  Stream<List<String>> getAlarmIds() {
-    return _db
-        .collection('users')
-        .doc(userId)
-        .collection('alarms')
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) => doc.id).toList();
-    });
-  }
 }
