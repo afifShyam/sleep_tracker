@@ -50,8 +50,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: STColor.darkYellow,
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        backgroundColor: STColor.darkBlueBackground,
+        title: Text(
+          'Edit Profile',
+          style: TextStyleST.textStyle.appbar.copyWith(color: STColor.white),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => ProfileStartPage.of(context).exit(context),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: STColor.white,
+          ),
+        ),
       ),
       body: BlocListener<ProfileBloc, ProfileState>(
         listener: (context, state) {
@@ -69,12 +82,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Edit your profile information',
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueGrey,
+                      Center(
+                        child: Text(
+                          'Edit your profile information',
+                          style: TextStyle(
+                            fontSize: 24.0.r,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20.0),
@@ -128,6 +143,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                               widget.user!.imageUrl.isNotEmpty)
                                           ? widget.user!.imageUrl
                                           : '',
+                                  email: state.profileModel.email,
                                   username: _usernameController.text,
                                   name: _nameController.text,
                                   age: int.tryParse(_ageController.text) ?? 0,

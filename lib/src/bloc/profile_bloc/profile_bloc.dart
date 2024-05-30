@@ -16,6 +16,35 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
     on<GetData>(_getData);
     on<UpdateData>(_updateData);
     on<StoreImage>(_storeImage);
+    on<InsertQuestion>(_insertQuestion);
+  }
+
+  Future<void> _insertQuestion(InsertQuestion event, Emitter emit) async {
+    final dataA = FirebaseFirestore.instance
+        .collection('question')
+        .doc('question 15')
+        .collection('answer_a')
+        .doc('a');
+    final dataB = FirebaseFirestore.instance
+        .collection('question')
+        .doc('question 15')
+        .collection('answer_b')
+        .doc('b');
+    final dataC = FirebaseFirestore.instance
+        .collection('question')
+        .doc('question 15')
+        .collection('answer_c')
+        .doc('c');
+    final dataD = FirebaseFirestore.instance
+        .collection('question')
+        .doc('question 15')
+        .collection('answer_d')
+        .doc('d');
+
+    await dataA.set({'solution': event.sA, 'answer_a': event.a});
+    await dataB.set({'solution': event.sB, 'answer_b': event.b});
+    await dataC.set({'solution': event.sC, 'answer_c': event.c});
+    await dataD.set({'solution': event.sD, 'answer_d': event.d});
   }
 
   Future<void> _getData(GetData event, Emitter emit) async {
@@ -32,6 +61,7 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
           state.copyWith(
             profileModel: ProfileModel(
               imageUrl: user.data()?['imageUrl'] ?? '',
+              email: user.data()?['email'] ?? '',
               username: user.data()?['username'] ?? '',
               name: user.data()?['name'] ?? 'Name',
               age: user.data()?['age'] ?? 0,
@@ -65,6 +95,7 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
       user.update(
         ProfileModel(
           imageUrl: event.imageUrl,
+          email: event.email,
           username: event.username,
           name: event.name,
           age: event.age,

@@ -17,6 +17,7 @@ class UpdateData extends ProfileEvent {
   final String password;
   final String gender;
   final String imageUrl;
+  final String email;
 
   UpdateData({
     required this.username,
@@ -26,6 +27,7 @@ class UpdateData extends ProfileEvent {
     required this.password,
     required this.gender,
     required this.imageUrl,
+    required this.email,
   });
 }
 
@@ -33,4 +35,26 @@ class StoreImage extends ProfileEvent {
   final String image;
 
   StoreImage({required this.image});
+}
+
+class InsertQuestion extends ProfileEvent {
+  final String a;
+  final String b;
+  final String c;
+  final String d;
+  final String sA;
+  final String sB;
+  final String sC;
+  final String sD;
+
+  InsertQuestion({
+    required this.a,
+    required this.b,
+    required this.c,
+    required this.d,
+    required this.sA,
+    required this.sB,
+    required this.sC,
+    required this.sD,
+  });
 }

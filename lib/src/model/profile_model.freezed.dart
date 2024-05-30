@@ -21,6 +21,7 @@ ProfileModel _$ProfileModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ProfileModel {
   String get imageUrl => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
   String get username => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   int get age => throw _privateConstructorUsedError;
@@ -42,6 +43,7 @@ abstract class $ProfileModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String imageUrl,
+      String email,
       String username,
       String name,
       int age,
@@ -64,6 +66,7 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
   @override
   $Res call({
     Object? imageUrl = null,
+    Object? email = null,
     Object? username = null,
     Object? name = null,
     Object? age = null,
@@ -75,6 +78,10 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
       imageUrl: null == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
               as String,
       username: null == username
           ? _value.username
@@ -114,6 +121,7 @@ abstract class _$$ProfileModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {String imageUrl,
+      String email,
       String username,
       String name,
       int age,
@@ -134,6 +142,7 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? imageUrl = null,
+    Object? email = null,
     Object? username = null,
     Object? name = null,
     Object? age = null,
@@ -145,6 +154,10 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
       imageUrl: null == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
               as String,
       username: null == username
           ? _value.username
@@ -179,6 +192,7 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
 class _$ProfileModelImpl implements _ProfileModel {
   _$ProfileModelImpl(
       {required this.imageUrl,
+      required this.email,
       required this.username,
       required this.name,
       required this.age,
@@ -191,6 +205,8 @@ class _$ProfileModelImpl implements _ProfileModel {
 
   @override
   final String imageUrl;
+  @override
+  final String email;
   @override
   final String username;
   @override
@@ -206,7 +222,7 @@ class _$ProfileModelImpl implements _ProfileModel {
 
   @override
   String toString() {
-    return 'ProfileModel(imageUrl: $imageUrl, username: $username, name: $name, age: $age, gender: $gender, phone: $phone, password: $password)';
+    return 'ProfileModel(imageUrl: $imageUrl, email: $email, username: $username, name: $name, age: $age, gender: $gender, phone: $phone, password: $password)';
   }
 
   @override
@@ -216,6 +232,7 @@ class _$ProfileModelImpl implements _ProfileModel {
             other is _$ProfileModelImpl &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.username, username) ||
                 other.username == username) &&
             (identical(other.name, name) || other.name == name) &&
@@ -228,8 +245,8 @@ class _$ProfileModelImpl implements _ProfileModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, imageUrl, username, name, age, gender, phone, password);
+  int get hashCode => Object.hash(runtimeType, imageUrl, email, username, name,
+      age, gender, phone, password);
 
   @JsonKey(ignore: true)
   @override
@@ -248,6 +265,7 @@ class _$ProfileModelImpl implements _ProfileModel {
 abstract class _ProfileModel implements ProfileModel {
   factory _ProfileModel(
       {required final String imageUrl,
+      required final String email,
       required final String username,
       required final String name,
       required final int age,
@@ -260,6 +278,8 @@ abstract class _ProfileModel implements ProfileModel {
 
   @override
   String get imageUrl;
+  @override
+  String get email;
   @override
   String get username;
   @override

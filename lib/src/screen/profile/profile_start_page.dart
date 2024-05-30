@@ -38,10 +38,11 @@ class ProfileStartPageState extends State<ProfileStartPage> {
     if (profileRoute.routeHistory.length <= 1) {
       // profileRoute.clearRouteHistory();
       Navigator.of(context).pop();
-      log('${profileRoute.routeHistory}');
+      log('exit from all page: ${profileRoute.routeHistory}');
     } else {
       profileRoute.popHistory();
       Navigator.of(ctx).pop();
+      log('exit 1 page: ${profileRoute.routeHistory}');
     }
   }
 

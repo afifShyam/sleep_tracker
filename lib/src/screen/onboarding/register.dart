@@ -124,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         SizedBox(height: 20.h),
                         ElevatedButton(
                           onPressed:
-                              _onRegisterPressed, //_isButtonEnabled() ? _onRegisterPressed : null,
+                              _isButtonEnabled() ? _onRegisterPressed : null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: STColor.darkBlueBackground,
                             padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -132,14 +132,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                 borderRadius: BorderRadius.circular(10)),
                             minimumSize: Size(double.infinity, 55.h),
                           ),
-                          child: Text(
-                            'Register',
-                            style: TextStyle(
-                              color: STColor.white,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: state.registerStatus == RegisterStatus.loading
+                              ? const Center(
+                                  child: CircularProgressIndicator.adaptive())
+                              : Text(
+                                  'Register',
+                                  style: TextStyle(
+                                    color: STColor.white,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                         SizedBox(
                           height: 30.h,
@@ -173,11 +176,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-              Visibility(
-                visible: state.registerStatus == RegisterStatus.loading,
-                child:
-                    const Center(child: CircularProgressIndicator.adaptive()),
-              )
             ],
           ),
         ),

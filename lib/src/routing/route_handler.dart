@@ -21,12 +21,12 @@ class RoutesHandler {
           routeSettings: settings,
         );
         break;
-      // case UtamaRoutes.initialRoute:
-      //   page = UtamaStartPage(
-      //     startPage: settings.name!,
-      //     routeSettings: settings,
-      //   );
-      //   break;
+      case ProfileRoute.profileRoute:
+        page = ProfileStartPage(
+          startPage: settings.name!,
+          routeSettings: settings,
+        );
+        break;
       // case QuestionPageRoutes.initialRoute:
       //   page = QuestionpageStartPage(
       //     startPage: settings.name!,

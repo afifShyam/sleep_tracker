@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:sleep_tracker/src/index.dart';
 
@@ -21,22 +25,16 @@ class HomePage extends StatelessWidget {
                   height: 280,
                   child: ClipPath(
                     clipper: BottomOvalClipper(),
-                    child: GestureDetector(
-                      onTap: () {
-                        // Handle tap event here
-                      },
-                      child: Image.asset(
-                        'assets/images/home_header.png',
-                        width: 150, // Adjust width as needed
-                        height: 150, // Adjust height as needed
-                        fit: BoxFit.cover,
-                      ),
+                    child: Image.asset(
+                      'assets/images/home_header.png',
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 230, horizontal: 20),
+                  padding: EdgeInsets.fromLTRB(20.w, 230.h, 20.w, 0.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -59,83 +57,42 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context, rootNavigator: true)
+                    .pushNamed(HomepageRoute.alarmSettingRoute);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  height: 100,
+                  width: MediaQuery.sizeOf(context).width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/alaarm.svg',
+                        width: 40,
+                        height: 40,
+                      ),
+                      SizedBox(width: 10.w),
+                      Text(
+                        'Sleep tracker and reminder',
+                        style: TextStyleST.textStyle.title,
+                      ),
+                    ],
+                  )),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showSleepTrackerSetupDialog(context);
-        },
-        backgroundColor: STColor.black,
-        child: const Icon(
-          Icons.add,
-          color: STColor.white,
-        ),
-      ),
-    );
-  }
-
-  void _showSleepTrackerSetupDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Set Sleep Tracker',
-            style: TextStyleST.textStyle.title.copyWith(
-              color: STColor.grey2,
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Set Your Sleep Goal',
-                style: TextStyleST.textStyle.subtitle.copyWith(
-                  color: STColor.grey2,
-                ),
-              ),
-              TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Hours',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Set Your Bedtime',
-                style: TextStyleST.textStyle.subtitle.copyWith(
-                  color: STColor.grey2,
-                ),
-              ),
-              TextFormField(
-                keyboardType: TextInputType.datetime,
-                decoration: const InputDecoration(
-                  labelText: 'Bedtime',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Close the dialog
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Save sleep tracker settings
-                Navigator.pop(context); // Close the dialog
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
     );
   }
 }
@@ -155,7 +112,7 @@ class DigitalClock extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
-                color: STColor.white,
+                color: Colors.white,
               ),
             ),
           );
@@ -179,13 +136,24 @@ class BottomOvalClipper extends CustomClipper<Path> {
 
     var firstControlPoint = Offset(size.width / 4, size.height);
     var firstPoint = Offset(size.width / 2, size.height);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
-        firstPoint.dx, firstPoint.dy);
+    path.quadraticBezierTo(
+      firstControlPoint.dx,
+      firstControlPoint.dy,
+      firstPoint.dx,
+      firstPoint.dy,
+    );
 
-    var secondControlPoint = Offset(size.width - (size.width / 4), size.height);
+    var secondControlPoint = Offset(
+      size.width - (size.width / 4),
+      size.height,
+    );
     var secondPoint = Offset(size.width, size.height - 30);
-    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
-        secondPoint.dx, secondPoint.dy);
+    path.quadraticBezierTo(
+      secondControlPoint.dx,
+      secondControlPoint.dy,
+      secondPoint.dx,
+      secondPoint.dy,
+    );
 
     path.lineTo(size.width, 0.0);
     path.close();

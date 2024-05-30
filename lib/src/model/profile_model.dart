@@ -7,6 +7,7 @@ part 'profile_model.g.dart';
 class ProfileModel with _$ProfileModel {
   factory ProfileModel({
     required String imageUrl,
+    required String email,
     required String username,
     required String name,
     required int age,
@@ -17,6 +18,7 @@ class ProfileModel with _$ProfileModel {
 
   factory ProfileModel.initial() => ProfileModel(
         imageUrl: '',
+        email: '',
         username: '',
         name: '',
         age: 5,

@@ -56,8 +56,16 @@ class HomepageStartPageState extends State<HomepageStartPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RegisterBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<RegisterBloc>(
+          create: (context) => RegisterBloc(),
+        ),
+        BlocProvider<SetAlarmBloc>(
+          create: (context) =>
+              SetAlarmBloc(FirestoreService(GetDataFireBase.currentUserId)),
+        ),
+      ],
       child: Navigator(
         key: _navKey,
         initialRoute: widget.startPage,

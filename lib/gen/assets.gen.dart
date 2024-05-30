@@ -16,6 +16,12 @@ class $AssetsImagesGen {
   AssetGenImage get darkSkies =>
       const AssetGenImage('assets/images/Dark-Skies.webp');
 
+  /// File path: assets/images/alaarm.svg
+  String get alaarm => 'assets/images/alaarm.svg';
+
+  /// File path: assets/images/bed.svg
+  String get bed => 'assets/images/bed.svg';
+
   /// File path: assets/images/blank_profile.svg
   String get blankProfile => 'assets/images/blank_profile.svg';
 
@@ -41,6 +47,8 @@ class $AssetsImagesGen {
   /// List of all assets
   List<dynamic> get values => [
         darkSkies,
+        alaarm,
+        bed,
         blankProfile,
         homeHeader,
         imageBgWelcome,

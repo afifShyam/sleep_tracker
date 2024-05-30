@@ -27,4 +27,5 @@ const _$ProfileStatusEnumMap = {
   ProfileStatus.completed: 'completed',
   ProfileStatus.error: 'error',
   ProfileStatus.updated: 'updated',
+  ProfileStatus.changeImage: 'changeImage',
 };

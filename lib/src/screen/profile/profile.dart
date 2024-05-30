@@ -61,9 +61,9 @@ class _ProfileState extends State<Profile> {
                           bottom: 0,
                           child: IconButton(
                             onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                  ProfileRoute.editProfileRoute,
-                                  arguments: {
+                              Navigator.of(context, rootNavigator: true)
+                                  .pushNamed(ProfileRoute.editProfileRoute,
+                                      arguments: {
                                     'user': profileData.profileModel,
                                   });
                             },
@@ -99,6 +99,10 @@ class _ProfileState extends State<Profile> {
                     ProfileInfoRow(
                       label: 'Gender',
                       value: profileData.profileModel.gender,
+                    ),
+                    ProfileInfoRow(
+                      label: 'Email',
+                      value: profileData.profileModel.email,
                     ),
                     ProfileInfoRow(
                       label: 'Phone',
@@ -141,6 +145,7 @@ class ProfileInfoRow extends StatelessWidget {
   final String value;
 
   const ProfileInfoRow({
+    super.key,
     required this.label,
     required this.value,
   });
