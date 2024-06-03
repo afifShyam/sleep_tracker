@@ -20,10 +20,10 @@ QuestionModel _$QuestionModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$QuestionModel {
-  int get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   String get question => throw _privateConstructorUsedError;
-  AnswerType get answerType => throw _privateConstructorUsedError;
-  bool get answer => throw _privateConstructorUsedError;
+  List<String> get answerType => throw _privateConstructorUsedError;
+  List<String> get solutions => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,7 +37,11 @@ abstract class $QuestionModelCopyWith<$Res> {
           QuestionModel value, $Res Function(QuestionModel) then) =
       _$QuestionModelCopyWithImpl<$Res, QuestionModel>;
   @useResult
-  $Res call({int id, String question, AnswerType answerType, bool answer});
+  $Res call(
+      {String id,
+      String question,
+      List<String> answerType,
+      List<String> solutions});
 }
 
 /// @nodoc
@@ -56,13 +60,13 @@ class _$QuestionModelCopyWithImpl<$Res, $Val extends QuestionModel>
     Object? id = null,
     Object? question = null,
     Object? answerType = null,
-    Object? answer = null,
+    Object? solutions = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       question: null == question
           ? _value.question
           : question // ignore: cast_nullable_to_non_nullable
@@ -70,11 +74,11 @@ class _$QuestionModelCopyWithImpl<$Res, $Val extends QuestionModel>
       answerType: null == answerType
           ? _value.answerType
           : answerType // ignore: cast_nullable_to_non_nullable
-              as AnswerType,
-      answer: null == answer
-          ? _value.answer
-          : answer // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as List<String>,
+      solutions: null == solutions
+          ? _value.solutions
+          : solutions // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -87,7 +91,11 @@ abstract class _$$QuestionModelImplCopyWith<$Res>
       __$$QuestionModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String question, AnswerType answerType, bool answer});
+  $Res call(
+      {String id,
+      String question,
+      List<String> answerType,
+      List<String> solutions});
 }
 
 /// @nodoc
@@ -104,25 +112,25 @@ class __$$QuestionModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? question = null,
     Object? answerType = null,
-    Object? answer = null,
+    Object? solutions = null,
   }) {
     return _then(_$QuestionModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       question: null == question
           ? _value.question
           : question // ignore: cast_nullable_to_non_nullable
               as String,
       answerType: null == answerType
-          ? _value.answerType
+          ? _value._answerType
           : answerType // ignore: cast_nullable_to_non_nullable
-              as AnswerType,
-      answer: null == answer
-          ? _value.answer
-          : answer // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as List<String>,
+      solutions: null == solutions
+          ? _value._solutions
+          : solutions // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -133,24 +141,37 @@ class _$QuestionModelImpl implements _QuestionModel {
   _$QuestionModelImpl(
       {required this.id,
       required this.question,
-      required this.answerType,
-      required this.answer});
+      required final List<String> answerType,
+      required final List<String> solutions})
+      : _answerType = answerType,
+        _solutions = solutions;
 
   factory _$QuestionModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$QuestionModelImplFromJson(json);
 
   @override
-  final int id;
+  final String id;
   @override
   final String question;
+  final List<String> _answerType;
   @override
-  final AnswerType answerType;
+  List<String> get answerType {
+    if (_answerType is EqualUnmodifiableListView) return _answerType;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_answerType);
+  }
+
+  final List<String> _solutions;
   @override
-  final bool answer;
+  List<String> get solutions {
+    if (_solutions is EqualUnmodifiableListView) return _solutions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_solutions);
+  }
 
   @override
   String toString() {
-    return 'QuestionModel(id: $id, question: $question, answerType: $answerType, answer: $answer)';
+    return 'QuestionModel(id: $id, question: $question, answerType: $answerType, solutions: $solutions)';
   }
 
   @override
@@ -161,15 +182,20 @@ class _$QuestionModelImpl implements _QuestionModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.question, question) ||
                 other.question == question) &&
-            (identical(other.answerType, answerType) ||
-                other.answerType == answerType) &&
-            (identical(other.answer, answer) || other.answer == answer));
+            const DeepCollectionEquality()
+                .equals(other._answerType, _answerType) &&
+            const DeepCollectionEquality()
+                .equals(other._solutions, _solutions));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, question, answerType, answer);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      question,
+      const DeepCollectionEquality().hash(_answerType),
+      const DeepCollectionEquality().hash(_solutions));
 
   @JsonKey(ignore: true)
   @override
@@ -187,22 +213,22 @@ class _$QuestionModelImpl implements _QuestionModel {
 
 abstract class _QuestionModel implements QuestionModel {
   factory _QuestionModel(
-      {required final int id,
+      {required final String id,
       required final String question,
-      required final AnswerType answerType,
-      required final bool answer}) = _$QuestionModelImpl;
+      required final List<String> answerType,
+      required final List<String> solutions}) = _$QuestionModelImpl;
 
   factory _QuestionModel.fromJson(Map<String, dynamic> json) =
       _$QuestionModelImpl.fromJson;
 
   @override
-  int get id;
+  String get id;
   @override
   String get question;
   @override
-  AnswerType get answerType;
+  List<String> get answerType;
   @override
-  bool get answer;
+  List<String> get solutions;
   @override
   @JsonKey(ignore: true)
   _$$QuestionModelImplCopyWith<_$QuestionModelImpl> get copyWith =>

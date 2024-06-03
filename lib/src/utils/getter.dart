@@ -1,6 +1,12 @@
+import 'dart:developer';
+
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sleep_tracker/src/index.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 class GetDataFireBase {
   // Private constructor to prevent instantiation from outside the class
@@ -68,5 +74,109 @@ class FirestoreService {
         return Alarm.fromJson(doc.data()).copyWith(id: doc.id);
       }).toList();
     });
+  }
+}
+
+class QuestionFirestore {
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  Future<List<QuestionModel>> getQuestions() async {
+    final questionsSnapshot = await _db.collection('question').get();
+    final questions = <QuestionModel>[];
+
+    for (final questionDoc in questionsSnapshot.docs) {
+      final questionId = questionDoc.id;
+      final data = questionDoc.data();
+      final text = data['questions'] as String;
+
+      // Fetch the answers and solutions
+      final options = <String>[];
+      final solutions = <String>[];
+
+      for (var option in ['a', 'b', 'c', 'd']) {
+        final answerDoc = await _db
+            .collection('question')
+            .doc(questionId)
+            .collection('answer_$option')
+            .doc(option)
+            .get();
+        final answerData = answerDoc.data();
+        options.add(answerData!['answer_$option'] as String);
+        solutions.add(answerData['solution'] as String);
+      }
+
+      questions.add(QuestionModel(
+        id: questionId,
+        question: text,
+        answerType: options,
+        solutions: solutions,
+      ));
+    }
+
+    return questions;
+  }
+}
+
+class NotificationService {
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  static Future<void> initialize() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()!
+        .requestNotificationsPermission();
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      // iOS: IOSInitializationSettings(),
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    tz.initializeTimeZones();
+  }
+
+  static Future<void> showNotification(
+    int id,
+    String title,
+    String body,
+    DateTime date,
+  ) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'alarm_channel_id',
+      'Alarm Notifications',
+      channelDescription: 'Notifications for alarms',
+      importance: Importance.max,
+      priority: Priority.max,
+      category: AndroidNotificationCategory.alarm,
+      audioAttributesUsage: AudioAttributesUsage.alarm,
+      sound: RawResourceAndroidNotificationSound('alarm_sound'),
+    );
+
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id.hashCode,
+      title,
+      body,
+      tz.TZDateTime.from(date, tz.getLocation('Asia/Kuala_Lumpur')),
+      platformChannelSpecifics,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
+}
+
+class AlarmManager {
+  static void triggerAlarm(
+      int id, String title, String body, DateTime dateTime) {
+    NotificationService.showNotification(id, title, body, dateTime);
   }
 }

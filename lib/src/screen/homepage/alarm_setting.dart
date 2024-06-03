@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,68 +12,148 @@ class AlarmSettingsView extends StatefulWidget {
 }
 
 class _AlarmSettingsViewState extends State<AlarmSettingsView> {
+  @override
+  void initState() {
+    super.initState();
+    NotificationService.initialize();
+    FirestoreService(GetDataFireBase.currentUserId).getAlarms();
+  }
+
   void _addAlarm() {
-    context.read<SetAlarmBloc>().add(AddAlarm(
-          Alarm(
-            id: FirebaseFirestore.instance
-                .collection('users')
-                .doc(GetDataFireBase.currentUserId)
-                .collection('alarms')
-                .doc()
-                .id,
-            bedtime: const TimeOfDay(hour: 22, minute: 0),
-            wakeupTime: const TimeOfDay(hour: 6, minute: 0),
-            enabled: false,
-            days: {
-              'Monday': false,
-              'Tuesday': false,
-              'Wednesday': false,
-              'Thursday': false,
-              'Friday': false,
-              'Saturday': false,
-              'Sunday': false,
-            },
-            isExpanded: false,
-          ),
-        ));
+    final newAlarmId = FirebaseFirestore.instance
+        .collection('users')
+        .doc(GetDataFireBase.currentUserId)
+        .collection('alarms')
+        .doc()
+        .id;
+
+    final newAlarm = Alarm(
+      id: newAlarmId,
+      bedtime: const TimeOfDay(hour: 22, minute: 0),
+      wakeupTime: const TimeOfDay(hour: 6, minute: 0),
+      enabled: false,
+      days: {
+        'Monday': false,
+        'Tuesday': false,
+        'Wednesday': false,
+        'Thursday': false,
+        'Friday': false,
+        'Saturday': false,
+        'Sunday': false,
+      },
+      isExpanded: false,
+    );
+
+    context.read<SetAlarmBloc>().add(AddAlarm(newAlarm));
+
+    if (newAlarm.enabled) {
+      _scheduleAlarms(newAlarm);
+    }
+  }
+
+  void _scheduleAlarms(Alarm alarm) {
+    for (var day in alarm.days.entries.where((entry) => entry.value)) {
+      int dayOffset = _getDayOffset(day.key);
+      final now = DateTime.now();
+      final bedtime = DateTime(now.year, now.month, now.day + dayOffset,
+          alarm.bedtime.hour, alarm.bedtime.minute);
+      final wakeupTime = DateTime(now.year, now.month, now.day + dayOffset,
+          alarm.wakeupTime.hour, alarm.wakeupTime.minute);
+
+      log('Scheduling alarm for ${day.key}');
+      log('Bedtime DateTime: ${bedtime.millisecondsSinceEpoch}');
+      log('Wakeup Time: $wakeupTime');
+
+      if (bedtime.isAfter(now)) {
+        AlarmManager.triggerAlarm(
+          alarm.id.hashCode,
+          'Bedtime Alarm',
+          'It\'s time to go to bed!',
+          bedtime,
+        );
+      }
+
+      if (wakeupTime.isAfter(now)) {
+        AlarmManager.triggerAlarm(
+          alarm.id.hashCode + 1,
+          'Wakeup Alarm',
+          'It\'s time to wake up!',
+          wakeupTime,
+        );
+      }
+    }
+  }
+
+  int _getDayOffset(String day) {
+    final now = DateTime.now();
+    final weekday = now.weekday;
+
+    switch (day) {
+      case 'Monday':
+        return (1 - weekday + 7) % 7;
+      case 'Tuesday':
+        return (2 - weekday + 7) % 7;
+      case 'Wednesday':
+        return (3 - weekday + 7) % 7;
+      case 'Thursday':
+        return (4 - weekday + 7) % 7;
+      case 'Friday':
+        return (5 - weekday + 7) % 7;
+      case 'Saturday':
+        return (6 - weekday + 7) % 7;
+      case 'Sunday':
+        return (7 - weekday + 7) % 7;
+      default:
+        return 0;
+    }
   }
 
   Future<void> _selectTime(
-      BuildContext context, Alarm alarm, bool isBedtime, String id) async {
+      BuildContext context, Alarm alarm, bool isBedtime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: isBedtime ? alarm.bedtime : alarm.wakeupTime,
     );
-    if (picked != null) {
-      context.read<SetAlarmBloc>().add(UpdateAlarm(alarm.copyWith(
-            id: id,
-            bedtime: isBedtime ? picked : alarm.bedtime,
-            wakeupTime: isBedtime ? alarm.wakeupTime : picked,
-          )));
+    if (picked != null && context.mounted) {
+      final updatedAlarm = alarm.copyWith(
+        bedtime: isBedtime ? picked : alarm.bedtime,
+        wakeupTime: isBedtime ? alarm.wakeupTime : picked,
+      );
+      context.read<SetAlarmBloc>().add(UpdateAlarm(updatedAlarm));
+
+      if (alarm.enabled) {
+        _scheduleAlarms(updatedAlarm);
+      }
     }
   }
 
-  void _toggleDay(Alarm alarm, String day, String id) {
+  void _toggleDay(Alarm alarm, String day) {
     final updatedDays = Map<String, bool>.from(alarm.days);
     updatedDays[day] = !updatedDays[day]!;
-    context
-        .read<SetAlarmBloc>()
-        .add(UpdateAlarm(alarm.copyWith(id: id, days: updatedDays)));
+    final updatedAlarm = alarm.copyWith(days: updatedDays);
+    context.read<SetAlarmBloc>().add(UpdateAlarm(updatedAlarm));
+
+    if (alarm.enabled) {
+      _scheduleAlarms(updatedAlarm);
+    }
   }
 
   void _deleteAlarm(Alarm alarm) {
     context.read<SetAlarmBloc>().add(RemoveAlarm(alarm));
   }
 
-  void _toggleExpansion(Alarm alarm, String id) {
-    context.read<SetAlarmBloc>().add(
-        UpdateAlarm(alarm.copyWith(id: id, isExpanded: !alarm.isExpanded)));
+  void _toggleExpansion(Alarm alarm) {
+    final updatedAlarm = alarm.copyWith(isExpanded: !alarm.isExpanded);
+    context.read<SetAlarmBloc>().add(UpdateAlarm(updatedAlarm));
   }
 
-  void _toggleEnabled(Alarm alarm, bool value, String id) {
-    context
-        .read<SetAlarmBloc>()
-        .add(UpdateAlarm(alarm.copyWith(id: id, enabled: value)));
+  void _toggleEnabled(Alarm alarm, bool value) {
+    final updatedAlarm = alarm.copyWith(enabled: value);
+    context.read<SetAlarmBloc>().add(UpdateAlarm(updatedAlarm));
+
+    if (value) {
+      _scheduleAlarms(updatedAlarm);
+    }
   }
 
   @override
@@ -89,13 +170,16 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                fixedSize: const Size(100, 0),
-                backgroundColor: Theme.of(context).primaryColor),
+              fixedSize: const Size(100, 0),
+              backgroundColor: Theme.of(context).primaryColor,
+            ),
             onPressed: _addAlarm,
             child: Text(
               'Add Alarm',
-              style: TextStyleST.textStyle.interMedium
-                  .copyWith(color: STColor.white, fontSize: 10),
+              style: TextStyleST.textStyle.interMedium.copyWith(
+                color: STColor.white,
+                fontSize: 10,
+              ),
             ),
           ),
         ],
@@ -114,14 +198,12 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
                       return AlarmCard(
                         alarm: alarm,
                         onDelete: () => _deleteAlarm(alarm),
-                        onSelectTime: (bool isBedtime) => _selectTime(
-                            context, alarm, isBedtime, alarm.id ?? ''),
-                        onToggleDay: (String day) =>
-                            _toggleDay(alarm, day, alarm.id ?? ''),
+                        onSelectTime: (bool isBedtime) =>
+                            _selectTime(context, alarm, isBedtime),
+                        onToggleDay: (String day) => _toggleDay(alarm, day),
                         onToggleEnabled: (bool value) =>
-                            _toggleEnabled(alarm, value, alarm.id ?? ''),
-                        onToggleExpansion: () =>
-                            _toggleExpansion(alarm, alarm.id ?? ''),
+                            _toggleEnabled(alarm, value),
+                        onToggleExpansion: () => _toggleExpansion(alarm),
                       );
                     },
                   );

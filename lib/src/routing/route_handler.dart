@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:sleep_tracker/src/index.dart';
+import 'package:sleep_tracker/src/screen/info/question_start_page.dart';
 
 class RoutesHandler {
   RoutesHandler._();
@@ -27,12 +28,12 @@ class RoutesHandler {
           routeSettings: settings,
         );
         break;
-      // case QuestionPageRoutes.initialRoute:
-      //   page = QuestionpageStartPage(
-      //     startPage: settings.name!,
-      //     routeSettings: settings,
-      //   );
-      //   break;
+      case QuestionRoute.questionRoute:
+        page = QuestionStartPage(
+          startPage: settings.name!,
+          routeSettings: settings,
+        );
+        break;
       // default:
     }
 

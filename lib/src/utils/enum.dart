@@ -1,7 +1,7 @@
 enum AnswerType {
-  answerA,
-  answerB,
-  answerC,
-  answerD,
+  a,
+  b,
+  c,
+  d,
   none,
 }

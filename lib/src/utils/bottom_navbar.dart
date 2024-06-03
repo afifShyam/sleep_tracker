@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sleep_tracker/src/index.dart';
+import 'package:sleep_tracker/src/screen/info/question_start_page.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -39,9 +40,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
             backgroundColor: STColor.darkBlueBackground,
             body: IndexedStack(
               index: _selectedIndex,
-              children: [
+              children: const [
                 HomepageStartPage(startPage: HomepageRoute.mainpageRoute),
-                Center(child: Text('Explore More on the Info Page!')),
+                QuestionStartPage(startPage: QuestionRoute.infoPage),
                 ProfileStartPage(startPage: ProfileRoute.dashProfileRoute),
               ],
             ),
@@ -76,7 +77,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       ),
                       GButton(
                         icon: Icons.info,
-                        text: 'Info',
+                        text: 'PR',
                         iconColor: Colors.purple,
                         textColor: Colors.purple,
                         backgroundColor: Colors.grey.shade100,

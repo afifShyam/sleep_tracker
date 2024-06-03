@@ -7,17 +7,17 @@ part 'question_model.g.dart';
 @freezed
 class QuestionModel with _$QuestionModel {
   factory QuestionModel({
-    required int id,
+    required String id,
     required String question,
-    required AnswerType answerType,
-    required bool answer,
+    required List<String> answerType,
+    required List<String> solutions,
   }) = _QuestionModel;
 
   factory QuestionModel.initial() => QuestionModel(
-        id: 0,
+        id: '',
         question: '',
-        answerType: AnswerType.none,
-        answer: false,
+        answerType: [],
+        solutions: [],
       );
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) =>
