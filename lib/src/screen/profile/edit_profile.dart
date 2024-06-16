@@ -8,9 +8,9 @@ class EditProfilePage extends StatefulWidget {
   final ProfileModel? user;
 
   const EditProfilePage({
-    Key? key,
+    super.key,
     this.user,
-  }) : super(key: key);
+  });
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -69,7 +69,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       body: BlocListener<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state.profileStatus == ProfileStatus.updated) {
-            ProfileStartPage.of(context).exit(context);
+            // ProfileStartPage.of(context).exit(context);
+            Navigator.of(context)
+                .pushReplacementNamed(ProfileRoute.dashProfileRoute);
           }
         },
         child: BlocBuilder<ProfileBloc, ProfileState>(

@@ -162,7 +162,7 @@ class __$$AlarmImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$AlarmImpl implements _Alarm {
+class _$AlarmImpl extends _Alarm {
   const _$AlarmImpl(
       {this.id,
       @TimeOfDayConverter() required this.bedtime,
@@ -170,7 +170,8 @@ class _$AlarmImpl implements _Alarm {
       required this.enabled,
       required final Map<String, bool> days,
       this.isExpanded = false})
-      : _days = days;
+      : _days = days,
+        super._();
 
   factory _$AlarmImpl.fromJson(Map<String, dynamic> json) =>
       _$$AlarmImplFromJson(json);
@@ -236,7 +237,7 @@ class _$AlarmImpl implements _Alarm {
   }
 }
 
-abstract class _Alarm implements Alarm {
+abstract class _Alarm extends Alarm {
   const factory _Alarm(
       {final String? id,
       @TimeOfDayConverter() required final TimeOfDay bedtime,
@@ -244,6 +245,7 @@ abstract class _Alarm implements Alarm {
       required final bool enabled,
       required final Map<String, bool> days,
       final bool isExpanded}) = _$AlarmImpl;
+  const _Alarm._() : super._();
 
   factory _Alarm.fromJson(Map<String, dynamic> json) = _$AlarmImpl.fromJson;
 

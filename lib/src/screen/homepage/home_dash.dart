@@ -1,14 +1,13 @@
 import 'dart:async';
-import 'dart:developer';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:sleep_tracker/src/index.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +89,31 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Daily Sleep Statistics',
+                    style: TextStyleST.textStyle.title.copyWith(
+                      color: STColor.white,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // const DailySleepChart(),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Weekly Sleep Statistics',
+                    style: TextStyleST.textStyle.title.copyWith(
+                      color: STColor.white,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // const WeeklySleepChart(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -98,7 +122,7 @@ class HomePage extends StatelessWidget {
 }
 
 class DigitalClock extends StatelessWidget {
-  const DigitalClock({Key? key}) : super(key: key);
+  const DigitalClock({super.key});
 
   @override
   Widget build(BuildContext context) {

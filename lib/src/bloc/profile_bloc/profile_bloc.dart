@@ -105,11 +105,11 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
         ).toJson(),
       );
 
+      add(GetData(id: GetDataFireBase.currentUserId));
+
       emit(
         state.copyWith(profileStatus: ProfileStatus.updated),
       );
-
-      add(GetData(id: GetDataFireBase.currentUserId));
     } catch (e) {
       emit(
         state.copyWith(

@@ -226,17 +226,19 @@ class AlarmCard extends StatelessWidget {
   final VoidCallback onToggleExpansion;
 
   const AlarmCard({
-    Key? key,
+    super.key,
     required this.alarm,
     required this.onDelete,
     required this.onSelectTime,
     required this.onToggleDay,
     required this.onToggleEnabled,
     required this.onToggleExpansion,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    final sleepDuration = alarm.sleepDuration;
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -247,6 +249,10 @@ class AlarmCard extends StatelessWidget {
             title: Text(
               '${alarm.bedtime.format(context)} - ${alarm.wakeupTime.format(context)}',
               style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+              'Sleep Duration: ${sleepDuration.inHours}h ${sleepDuration.inMinutes.remainder(60)}m',
+              style: const TextStyle(color: Colors.grey),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
