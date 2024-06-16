@@ -7,7 +7,8 @@
         {
             "name": "sleep_tracker",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "lib/main.dart"
         },
         {
             "name": "sleep_tracker (profile mode)",
