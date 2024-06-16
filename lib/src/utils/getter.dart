@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -122,22 +119,53 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   static Future<void> initialize() async {
+    // Android settings
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
+    // iOS settings using DarwinInitializationSettings
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+
+    // Request permissions for Android
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()!
-        .requestNotificationsPermission();
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestExactAlarmsPermission();
+
+    // Request permissions for iOS
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
-      // iOS: IOSInitializationSettings(),
+      iOS: initializationSettingsIOS,
     );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+    );
+
     tz.initializeTimeZones();
+  }
+
+  // Handle notification tap
+  static Future<void> onDidReceiveNotificationResponse(
+      NotificationResponse notificationResponse) async {
+    final payload = notificationResponse.payload;
+    // Handle the notification tap here, e.g., navigate to a specific screen
   }
 
   static Future<void> showNotification(
@@ -153,20 +181,30 @@ class NotificationService {
       channelDescription: 'Notifications for alarms',
       importance: Importance.max,
       priority: Priority.max,
+      enableLights: true,
       category: AndroidNotificationCategory.alarm,
       audioAttributesUsage: AudioAttributesUsage.alarm,
       sound: RawResourceAndroidNotificationSound('alarm_sound'),
     );
 
+    const DarwinNotificationDetails iosPlatformChannelSpecifics =
+        DarwinNotificationDetails(
+      presentAlert: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.critical,
+      sound: 'alarm_sound.mp3',
+    );
+
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
+      iOS: iosPlatformChannelSpecifics,
     );
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      id.hashCode,
+      id,
       title,
       body,
-      tz.TZDateTime.from(date, tz.getLocation('Asia/Kuala_Lumpur')),
+      tz.TZDateTime.from(date, tz.local),
       platformChannelSpecifics,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
