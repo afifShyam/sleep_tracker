@@ -1,8 +1,8 @@
-import 'dart:async';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:sleep_tracker/src/index.dart';
 
@@ -71,47 +71,60 @@ class HomePage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/images/alaarm.svg',
-                        width: 40,
-                        height: 40,
-                      ),
-                      SizedBox(width: 10.w),
-                      Text(
-                        'Sleep tracker and reminder',
-                        style: TextStyleST.textStyle.title,
-                      ),
-                    ],
-                  )),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/alaarm.svg',
+                          width: 40,
+                          height: 40,
+                        ),
+                        SizedBox(width: 10.w),
+                        Text(
+                          'Sleep tracker and reminder',
+                          style: TextStyleST.textStyle.title,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
+            SizedBox(height: 10.h),
+            BlocBuilder<StatisticBloc, StatisticState>(
+              builder: (context, state) {
+                return Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween, // Space evenly
+                  children: [
+                    Text('Daily'), // Left side - Daily text
+                    Switch.adaptive(
+                      value: state.isWeekly,
+                      onChanged: (value) =>
+                          context.read<StatisticBloc>().add(SetIsWeekly(value)),
+                      activeTrackColor: Colors.lightBlueAccent,
+                      activeColor: Colors.blue,
+                      inactiveThumbColor: Colors.grey,
+                      inactiveTrackColor: Colors.grey.withOpacity(0.5),
+                    ),
+                    Text('Weekly'), // Right side - Weekly text
+                  ],
+                );
+              },
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Daily Sleep Statistics',
-                    style: TextStyleST.textStyle.title.copyWith(
-                      color: STColor.white,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  // const DailySleepChart(),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Weekly Sleep Statistics',
-                    style: TextStyleST.textStyle.title.copyWith(
-                      color: STColor.white,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  // const WeeklySleepChart(),
-                ],
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: BlocBuilder<StatisticBloc, StatisticState>(
+                  builder: (context, state) {
+                    if (state.isWeekly) {
+                      return const WeeklySleepStatisticsChart();
+                    } else {
+                      return const DailySleepStatisticsChart();
+                    }
+                  },
+                ),
               ),
             ),
           ],

@@ -44,6 +44,13 @@ class $AssetsImagesGen {
   AssetGenImage get registerLogo =>
       const AssetGenImage('assets/images/register_logo.jpeg');
 
+  /// File path: assets/images/sleep_bed_moon_asleep_sleeping.svg
+  String get sleepBedMoonAsleepSleeping =>
+      'assets/images/sleep_bed_moon_asleep_sleeping.svg';
+
+  /// File path: assets/images/sun.svg
+  String get sun => 'assets/images/sun.svg';
+
   /// List of all assets
   List<dynamic> get values => [
         darkSkies,
@@ -54,20 +61,35 @@ class $AssetsImagesGen {
         imageBgWelcome,
         lognBG,
         pageNotFound,
-        registerLogo
+        registerLogo,
+        sleepBedMoonAsleepSleeping,
+        sun
       ];
+}
+
+class $AssetsSoundGen {
+  const $AssetsSoundGen();
+
+  /// File path: assets/sound/alarm_sound.wav
+  String get alarmSound => 'assets/sound/alarm_sound.wav';
+
+  /// List of all assets
+  List<String> get values => [alarmSound];
 }
 
 class Assets {
   Assets._();
 
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsSoundGen sound = $AssetsSoundGen();
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName);
+  const AssetGenImage(this._assetName, {this.size = null});
 
   final String _assetName;
+
+  final Size? size;
 
   Image image({
     Key? key,

@@ -65,6 +65,9 @@ class HomepageStartPageState extends State<HomepageStartPage> {
           create: (context) =>
               SetAlarmBloc(FirestoreService(GetDataFireBase.currentUserId)),
         ),
+        BlocProvider<StatisticBloc>(
+          create: (context) => StatisticBloc()..add(const SetIsWeekly(false)),
+        ),
       ],
       child: Navigator(
         key: _navKey,

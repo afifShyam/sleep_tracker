@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:sleep_tracker/src/index.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -155,25 +159,44 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+      onDidReceiveNotificationResponse: (x) async {
+        final id = x.payload ?? '';
+        final map = jsonDecode(id);
+
+        if (map['type'] == 'bedtime') {
+          final now = DateTime.now();
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(GetDataFireBase.currentUserId)
+              .collection('sleep_data')
+              .doc(DateFormat('dd-MM-yyyy').format(DateTime.parse(map['date'])))
+              .set({
+            'bedtime': now,
+            'wakeup': '',
+            'timestamp': FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
+        } else {
+          final now = DateTime.now();
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(GetDataFireBase.currentUserId)
+              .collection('sleep_data')
+              .doc(DateFormat('dd-MM-yyyy').format(DateTime.parse(map['date'])))
+              .update({
+            // 'bedtime': now,
+            'wakeup': now,
+            // 'timestamp': FieldValue.serverTimestamp(),
+          });
+          // SetOptions(merge: true));
+        }
+      },
     );
 
     tz.initializeTimeZones();
   }
 
-  // Handle notification tap
-  static Future<void> onDidReceiveNotificationResponse(
-      NotificationResponse notificationResponse) async {
-    final payload = notificationResponse.payload;
-    // Handle the notification tap here, e.g., navigate to a specific screen
-  }
-
   static Future<void> showNotification(
-    int id,
-    String title,
-    String body,
-    DateTime date,
-  ) async {
+      int id, String title, String body, DateTime date, String? type) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'alarm_channel_id',
@@ -200,21 +223,22 @@ class NotificationService {
       iOS: iosPlatformChannelSpecifics,
     );
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.from(date, tz.local),
-      platformChannelSpecifics,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
+    await flutterLocalNotificationsPlugin.zonedSchedule(id, title, body,
+        tz.TZDateTime.from(date, tz.local), platformChannelSpecifics,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        // androidScheduleMode: AndroidScheduleMode.alarmClock,
+        payload:
+            '{"id":"$id","title":"$title","body":"$body", "date":"$date", "type":"$type"}');
+
+    //Example of JsonEncode
+    // {"id":"d","title":"titlell","body":"mantap"}
   }
 }
 
 class AlarmManager {
-  static void triggerAlarm(
-      int id, String title, String body, DateTime dateTime) {
-    NotificationService.showNotification(id, title, body, dateTime);
+  static void triggerAlarm(int id, String title, String body, DateTime dateTime,
+      {String? type}) {
+    NotificationService.showNotification(id, title, body, dateTime, type);
   }
 }

@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sleep_tracker/src/index.dart';
@@ -70,7 +72,9 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
           'Bedtime Alarm',
           'It\'s time to go to bed!',
           bedtime,
+          type: 'bedtime',
         );
+        // _setAutoInsert(alarm.id.hashCode, 'bedtime', bedtime, alarm.bedtime);
       }
 
       if (wakeupTime.isAfter(now)) {
@@ -79,9 +83,44 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
           'Wakeup Alarm',
           'It\'s time to wake up!',
           wakeupTime,
+          type: 'wakeup',
         );
+        // _setAutoInsert(
+        //     alarm.id.hashCode + 1, 'wakeup', wakeupTime, alarm.wakeupTime);
       }
     }
+  }
+
+  void _setAutoInsert(
+      int id, String type, DateTime scheduledTime, TimeOfDay presetTime) {
+    Timer(const Duration(minutes: 5), () async {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(GetDataFireBase.currentUserId)
+          .collection('sleep_data')
+          .doc(id.toString())
+          .get();
+
+      if (!doc.exists) {
+        final presetDateTime = DateTime(
+          scheduledTime.year,
+          scheduledTime.month,
+          scheduledTime.day,
+          presetTime.hour,
+          presetTime.minute,
+        );
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(GetDataFireBase.currentUserId)
+            .collection('sleep_data')
+            .doc(id.toString())
+            .set({
+          type: presetDateTime,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      }
+    });
   }
 
   int _getDayOffset(String day) {
@@ -237,8 +276,6 @@ class AlarmCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sleepDuration = alarm.sleepDuration;
-
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -249,10 +286,6 @@ class AlarmCard extends StatelessWidget {
             title: Text(
               '${alarm.bedtime.format(context)} - ${alarm.wakeupTime.format(context)}',
               style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-              'Sleep Duration: ${sleepDuration.inHours}h ${sleepDuration.inMinutes.remainder(60)}m',
-              style: const TextStyle(color: Colors.grey),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,

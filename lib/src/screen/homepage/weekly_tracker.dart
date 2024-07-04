@@ -1,103 +1,265 @@
-// import 'package:fl_chart/fl_chart.dart';
-// import 'package:flutter/material.dart';
-// import 'package:sleep_tracker/src/index.dart';
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sleep_tracker/src/index.dart';
 
-// class WeeklySleepChart extends StatelessWidget {
-//   const WeeklySleepChart({super.key});
+class WeeklySleepStatisticsChart extends StatefulWidget {
+  const WeeklySleepStatisticsChart({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final userId = GetDataFireBase.currentUserId;
-//     final sleepTrackingService = SleepTrackingService(userId);
+  @override
+  State<WeeklySleepStatisticsChart> createState() =>
+      _WeeklySleepStatisticsChartState();
+}
 
-//     return StreamBuilder<List<SleepData>>(
-//       stream: sleepTrackingService.getWeeklySleepData(),
-//       builder: (context, snapshot) {
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return const CircularProgressIndicator();
-//         }
-//         if (snapshot.hasError) {
-//           return const Text('Error loading sleep data');
-//         }
+class _WeeklySleepStatisticsChartState
+    extends State<WeeklySleepStatisticsChart> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _fetchWeeklySleepData(),
+      builder: (context, AsyncSnapshot<List<BarChartGroupData>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData ||
+            snapshot.data == null ||
+            snapshot.data!.isEmpty) {
+          return const Center(
+            child: Text(
+              'No data available',
+              style: TextStyle(color: Colors.white),
+            ),
+          );
+        }
+        return AspectRatio(
+          aspectRatio: 1.5,
+          child: GestureDetector(
+            onTapUp: (details) {
+              // Do nothing here
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 3,
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: BarChart(
+                  BarChartData(
+                    maxY: 20,
+                    barTouchData: BarTouchData(
+                      touchTooltipData: BarTouchTooltipData(
+                        // tooltipBgColor: Colors.blueAccent,
+                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                          return BarTooltipItem(
+                            '${rod.toY.toStringAsFixed(1)} hours',
+                            const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          );
+                        },
+                      ),
+                      touchCallback: (FlTouchEvent event, response) {
+                        if (response == null || response.spot == null) {
+                          return;
+                        }
+                        final touchedBarGroupIndex =
+                            response.spot!.touchedBarGroupIndex;
+                        final barData = snapshot.data![touchedBarGroupIndex];
+                        _showDetailsDialog(context, barData);
+                      },
+                    ),
+                    titlesData: FlTitlesData(
+                      show: true,
+                      rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: bottomTitles,
+                          reservedSize: 42,
+                        ),
+                      ),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 28,
+                          interval: 5,
+                          getTitlesWidget: leftTitles,
+                        ),
+                      ),
+                    ),
+                    borderData: FlBorderData(
+                      show: false,
+                    ),
+                    barGroups: snapshot.data!,
+                    gridData: FlGridData(
+                      show: true,
+                      getDrawingHorizontalLine: (value) {
+                        return FlLine(
+                          color: Colors.grey.withOpacity(0.2),
+                          strokeWidth: 1,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-//         final weeklyData = snapshot.data ?? [];
+  Future<List<BarChartGroupData>> _fetchWeeklySleepData() async {
+    final userId = GetDataFireBase.currentUserId;
+    final sleepData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('sleep_data')
+        .orderBy('timestamp', descending: true)
+        .limit(7)
+        .get();
 
-//         return SizedBox(
-//           height: 200,
-//           child: LineChart(
-//             LineChartData(
-//               lineBarsData: [
-//                 LineChartBarData(
-//                   spots: weeklyData.map((data) {
-//                     final weekDay = data.sleepTime.weekday.toDouble();
-//                     final sleepDuration = data.sleepDuration.inHours +
-//                         data.sleepDuration.inMinutes / 60.0;
+    List<BarChartGroupData> barData = [];
 
-//                     return FlSpot(weekDay, sleepDuration);
-//                   }).toList(),
-//                   isCurved: true,
-//                   colors: [Colors.blue],
-//                   barWidth: 4,
-//                   belowBarData: BarAreaData(
-//                     show: true,
-//                     colors: [
-//                       Colors.blue.withOpacity(0.3),
-//                     ],
-//                   ),
-//                   dotData: FlDotData(show: false),
-//                 ),
-//               ],
-//               borderData: FlBorderData(show: false),
-//               titlesData: FlTitlesData(
-//                 leftTitles: SideTitles(
-//                   showTitles: true,
-//                   reservedSize: 28,
-//                   getTextStyles: (context, value) => const TextStyle(
-//                     color: Colors.white,
-//                     fontWeight: FontWeight.bold,
-//                     fontSize: 14,
-//                   ),
-//                   interval: 1,
-//                   getTitles: (value) {
-//                     if (value.toInt() % 1 == 0) {
-//                       return '${value.toInt()}h';
-//                     }
-//                     return '';
-//                   },
-//                 ),
-//                 bottomTitles: SideTitles(
-//                   showTitles: true,
-//                   getTextStyles: (context, value) => const TextStyle(
-//                     color: Colors.white,
-//                     fontWeight: FontWeight.bold,
-//                     fontSize: 14,
-//                   ),
-//                   getTitles: (value) {
-//                     switch (value.toInt()) {
-//                       case 1:
-//                         return 'Mon';
-//                       case 2:
-//                         return 'Tue';
-//                       case 3:
-//                         return 'Wed';
-//                       case 4:
-//                         return 'Thu';
-//                       case 5:
-//                         return 'Fri';
-//                       case 6:
-//                         return 'Sat';
-//                       case 7:
-//                         return 'Sun';
-//                       default:
-//                         return '';
-//                     }
-//                   },
-//                 ),
-//               ),
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
+    for (var doc in sleepData.docs) {
+      try {
+        final data = doc.data();
+        final bedtimeTimestamp = data['bedtime'] as Timestamp?;
+        final wakeupTimestamp = data['wakeup'] as Timestamp?;
+
+        if (bedtimeTimestamp == null || wakeupTimestamp == null) {
+          continue; // Skip this document if either timestamp is null
+        }
+
+        final bedtime = bedtimeTimestamp.toDate();
+        final wakeupTime = wakeupTimestamp.toDate();
+        final duration =
+            wakeupTime.difference(bedtime).inMinutes / 60; // Convert to hours
+
+        barData.add(
+          BarChartGroupData(
+            x: bedtime.weekday -
+                1, // Adjust for FLChart (0 = Monday, 6 = Sunday)
+            barRods: [
+              BarChartRodData(
+                toY: duration,
+                gradient: const LinearGradient(
+                  colors: [Colors.cyan, Colors.blue],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                ),
+                width: 12,
+              ),
+            ],
+            showingTooltipIndicators: [
+              0
+            ], // Show tooltip on the first (and only) rod
+            // barRodsExtras: {
+            //   'bedtime': bedtime,
+            //   'wakeupTime': wakeupTime
+            // }
+          ),
+        );
+      } catch (e) {
+        // Handle errors, if any
+      }
+    }
+
+    return barData;
+  }
+
+  Widget leftTitles(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Color(0xff7589a2),
+      fontWeight: FontWeight.bold,
+      fontSize: 14,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = '0h';
+        break;
+      case 5:
+        text = '5h';
+        break;
+      case 10:
+        text = '10h';
+        break;
+      case 15:
+        text = '15h';
+        break;
+      case 20:
+        text = '20h';
+        break;
+      default:
+        return Container();
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 0,
+      child: Text(text, style: style),
+    );
+  }
+
+  Widget bottomTitles(double value, TitleMeta meta) {
+    const titles = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+    final Widget text = Text(
+      titles[value.toInt()],
+      style: const TextStyle(
+        color: Color(0xff7589a2),
+        fontWeight: FontWeight.bold,
+        fontSize: 14,
+      ),
+    );
+
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 16, // margin top
+      child: text,
+    );
+  }
+
+  void _showDetailsDialog(BuildContext context, BarChartGroupData barData) {
+    // final bedtime = barData.barRodsExtras['bedtime'];
+    // final wakeupTime = barData.barRodsExtras['wakeupTime'];
+    final duration = barData.barRods.first.toY;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Sleep Details'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Total Sleep: $duration hours'),
+              // Text('Bedtime: ${bedtime.toString()}'),
+              // Text('Wakeup Time: ${wakeupTime.toString()}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
