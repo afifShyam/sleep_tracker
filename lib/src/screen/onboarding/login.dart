@@ -31,6 +31,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
         }
+
+        if (state.registerStatus == RegisterStatus.loading) {
+          const CircularProgressIndicator.adaptive();
+        }
         if (state.registerStatus == RegisterStatus.completed) {
           Navigator.of(context).pushNamed(HomepageRoute.bottomRoute);
         }

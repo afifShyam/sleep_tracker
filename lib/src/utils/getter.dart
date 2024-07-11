@@ -228,6 +228,7 @@ class NotificationService {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         // androidScheduleMode: AndroidScheduleMode.alarmClock,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
         payload:
             '{"id":"$id","title":"$title","body":"$body", "date":"$date", "type":"$type"}');
 

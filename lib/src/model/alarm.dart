@@ -11,9 +11,11 @@ class Alarm with _$Alarm {
     String? id,
     @TimeOfDayConverter() required TimeOfDay bedtime,
     @TimeOfDayConverter() required TimeOfDay wakeupTime,
+    required DateTime sleepDate,
+    required DateTime wakeupDate,
     required bool enabled,
     required Map<String, bool> days,
-    @Default(false) bool isExpanded, // Added isExpanded field
+    @Default(false) bool isExpanded,
   }) = _Alarm;
 
   Duration get sleepDuration {

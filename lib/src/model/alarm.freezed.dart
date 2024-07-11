@@ -25,6 +25,8 @@ mixin _$Alarm {
   TimeOfDay get bedtime => throw _privateConstructorUsedError;
   @TimeOfDayConverter()
   TimeOfDay get wakeupTime => throw _privateConstructorUsedError;
+  DateTime get sleepDate => throw _privateConstructorUsedError;
+  DateTime get wakeupDate => throw _privateConstructorUsedError;
   bool get enabled => throw _privateConstructorUsedError;
   Map<String, bool> get days => throw _privateConstructorUsedError;
   bool get isExpanded => throw _privateConstructorUsedError;
@@ -43,6 +45,8 @@ abstract class $AlarmCopyWith<$Res> {
       {String? id,
       @TimeOfDayConverter() TimeOfDay bedtime,
       @TimeOfDayConverter() TimeOfDay wakeupTime,
+      DateTime sleepDate,
+      DateTime wakeupDate,
       bool enabled,
       Map<String, bool> days,
       bool isExpanded});
@@ -64,6 +68,8 @@ class _$AlarmCopyWithImpl<$Res, $Val extends Alarm>
     Object? id = freezed,
     Object? bedtime = null,
     Object? wakeupTime = null,
+    Object? sleepDate = null,
+    Object? wakeupDate = null,
     Object? enabled = null,
     Object? days = null,
     Object? isExpanded = null,
@@ -81,6 +87,14 @@ class _$AlarmCopyWithImpl<$Res, $Val extends Alarm>
           ? _value.wakeupTime
           : wakeupTime // ignore: cast_nullable_to_non_nullable
               as TimeOfDay,
+      sleepDate: null == sleepDate
+          ? _value.sleepDate
+          : sleepDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      wakeupDate: null == wakeupDate
+          ? _value.wakeupDate
+          : wakeupDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       enabled: null == enabled
           ? _value.enabled
           : enabled // ignore: cast_nullable_to_non_nullable
@@ -108,6 +122,8 @@ abstract class _$$AlarmImplCopyWith<$Res> implements $AlarmCopyWith<$Res> {
       {String? id,
       @TimeOfDayConverter() TimeOfDay bedtime,
       @TimeOfDayConverter() TimeOfDay wakeupTime,
+      DateTime sleepDate,
+      DateTime wakeupDate,
       bool enabled,
       Map<String, bool> days,
       bool isExpanded});
@@ -127,6 +143,8 @@ class __$$AlarmImplCopyWithImpl<$Res>
     Object? id = freezed,
     Object? bedtime = null,
     Object? wakeupTime = null,
+    Object? sleepDate = null,
+    Object? wakeupDate = null,
     Object? enabled = null,
     Object? days = null,
     Object? isExpanded = null,
@@ -144,6 +162,14 @@ class __$$AlarmImplCopyWithImpl<$Res>
           ? _value.wakeupTime
           : wakeupTime // ignore: cast_nullable_to_non_nullable
               as TimeOfDay,
+      sleepDate: null == sleepDate
+          ? _value.sleepDate
+          : sleepDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      wakeupDate: null == wakeupDate
+          ? _value.wakeupDate
+          : wakeupDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
       enabled: null == enabled
           ? _value.enabled
           : enabled // ignore: cast_nullable_to_non_nullable
@@ -167,6 +193,8 @@ class _$AlarmImpl extends _Alarm {
       {this.id,
       @TimeOfDayConverter() required this.bedtime,
       @TimeOfDayConverter() required this.wakeupTime,
+      required this.sleepDate,
+      required this.wakeupDate,
       required this.enabled,
       required final Map<String, bool> days,
       this.isExpanded = false})
@@ -185,6 +213,10 @@ class _$AlarmImpl extends _Alarm {
   @TimeOfDayConverter()
   final TimeOfDay wakeupTime;
   @override
+  final DateTime sleepDate;
+  @override
+  final DateTime wakeupDate;
+  @override
   final bool enabled;
   final Map<String, bool> _days;
   @override
@@ -200,7 +232,7 @@ class _$AlarmImpl extends _Alarm {
 
   @override
   String toString() {
-    return 'Alarm(id: $id, bedtime: $bedtime, wakeupTime: $wakeupTime, enabled: $enabled, days: $days, isExpanded: $isExpanded)';
+    return 'Alarm(id: $id, bedtime: $bedtime, wakeupTime: $wakeupTime, sleepDate: $sleepDate, wakeupDate: $wakeupDate, enabled: $enabled, days: $days, isExpanded: $isExpanded)';
   }
 
   @override
@@ -212,6 +244,10 @@ class _$AlarmImpl extends _Alarm {
             (identical(other.bedtime, bedtime) || other.bedtime == bedtime) &&
             (identical(other.wakeupTime, wakeupTime) ||
                 other.wakeupTime == wakeupTime) &&
+            (identical(other.sleepDate, sleepDate) ||
+                other.sleepDate == sleepDate) &&
+            (identical(other.wakeupDate, wakeupDate) ||
+                other.wakeupDate == wakeupDate) &&
             (identical(other.enabled, enabled) || other.enabled == enabled) &&
             const DeepCollectionEquality().equals(other._days, _days) &&
             (identical(other.isExpanded, isExpanded) ||
@@ -220,8 +256,16 @@ class _$AlarmImpl extends _Alarm {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, bedtime, wakeupTime, enabled,
-      const DeepCollectionEquality().hash(_days), isExpanded);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      bedtime,
+      wakeupTime,
+      sleepDate,
+      wakeupDate,
+      enabled,
+      const DeepCollectionEquality().hash(_days),
+      isExpanded);
 
   @JsonKey(ignore: true)
   @override
@@ -242,6 +286,8 @@ abstract class _Alarm extends Alarm {
       {final String? id,
       @TimeOfDayConverter() required final TimeOfDay bedtime,
       @TimeOfDayConverter() required final TimeOfDay wakeupTime,
+      required final DateTime sleepDate,
+      required final DateTime wakeupDate,
       required final bool enabled,
       required final Map<String, bool> days,
       final bool isExpanded}) = _$AlarmImpl;
@@ -257,6 +303,10 @@ abstract class _Alarm extends Alarm {
   @override
   @TimeOfDayConverter()
   TimeOfDay get wakeupTime;
+  @override
+  DateTime get sleepDate;
+  @override
+  DateTime get wakeupDate;
   @override
   bool get enabled;
   @override

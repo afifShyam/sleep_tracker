@@ -460,7 +460,7 @@ class _DailySleepStatisticsChartState extends State<DailySleepStatisticsChart> {
     for (var doc in sleepData.docs) {
       try {
         final data = doc.data();
-        final bedtimeTimestamp = data['bedtime'] as Timestamp?;
+        final bedtimeTimestamp = data['bedtime'];
         final wakeupTimestamp = data['wakeup'] as Timestamp?;
 
         if (bedtimeTimestamp == null || wakeupTimestamp == null) {
@@ -490,8 +490,8 @@ class _DailySleepStatisticsChartState extends State<DailySleepStatisticsChart> {
             ),
           ],
         );
-      } catch (e) {
-        log('Error fetch: $e');
+      } catch (_) {
+        // log('Error fetch: $e');
       }
     }
 

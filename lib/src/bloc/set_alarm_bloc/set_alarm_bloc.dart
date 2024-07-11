@@ -20,12 +20,14 @@ class SetAlarmBloc extends HydratedBloc<SetAlarmEvent, SetAlarmState> {
     on<AddAlarm>(_addAlarm);
     on<UpdateAlarm>(_updateAlarm);
     on<RemoveAlarm>(_removeAlarm);
+    on<UpdateAllAlarms>(_updateAllAlarms);
 
-    _firestoreService.getAlarms().listen((alarms) {
-      add(UpdateAllAlarms(alarms));
-    });
+    // _firestoreService.getAlarms().listen((alarms) {
+    //   add(UpdateAllAlarms(alarms));
+    // });
   }
 
+  // Event Handlers
   void _setBedTime(SetBedtime event, Emitter emit) => emit(state.copyWith(
         bedtime: event.time,
         setAlarmStatus: SetAlarmStatus.bedtimeSet,
@@ -77,6 +79,10 @@ class SetAlarmBloc extends HydratedBloc<SetAlarmEvent, SetAlarmState> {
         state.alarms!.where((alarm) => alarm.id != event.alarm.id).toList();
     await _firestoreService.deleteAlarm(event.alarm.id ?? '');
     emit(state.copyWith(alarms: alarms));
+  }
+
+  void _updateAllAlarms(UpdateAllAlarms event, Emitter emit) {
+    emit(state.copyWith(alarms: event.alarms));
   }
 
   @override

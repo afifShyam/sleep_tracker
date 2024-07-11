@@ -91,27 +91,71 @@ class HomePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10.h),
-            BlocBuilder<StatisticBloc, StatisticState>(
-              builder: (context, state) {
-                return Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween, // Space evenly
-                  children: [
-                    Text('Daily'), // Left side - Daily text
-                    Switch.adaptive(
-                      value: state.isWeekly,
-                      onChanged: (value) =>
-                          context.read<StatisticBloc>().add(SetIsWeekly(value)),
-                      activeTrackColor: Colors.lightBlueAccent,
-                      activeColor: Colors.blue,
-                      inactiveThumbColor: Colors.grey,
-                      inactiveTrackColor: Colors.grey.withOpacity(0.5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  icon: Transform.rotate(
+                      angle: -10,
+                      child: const Icon(
+                        Icons.mode_night_outlined,
+                      )),
+                  onPressed: () {},
+                  label: Text(
+                    'Sleep',
+                    style: TextStyleST.textStyle.button,
+                  ),
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7),
+                      ),
                     ),
-                    Text('Weekly'), // Right side - Weekly text
-                  ],
-                );
-              },
+                  ),
+                ),
+                SizedBox(width: 30.w),
+                ElevatedButton.icon(
+                  icon: const Icon(
+                    Icons.wb_sunny_sharp,
+                  ),
+                  onPressed: () {},
+                  label: Text(
+                    'Awake',
+                    style: TextStyleST.textStyle.button,
+                  ),
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7),
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
+
+            //Switch button to daily and weekend
+            // BlocBuilder<StatisticBloc, StatisticState>(
+            //   builder: (context, state) {
+            //     return Row(
+            //       mainAxisAlignment:
+            //           MainAxisAlignment.spaceBetween, // Space evenly
+            //       children: [
+            //         Text('Daily'), // Left side - Daily text
+            //         Switch.adaptive(
+            //           value: state.isWeekly,
+            //           onChanged: (value) =>
+            //               context.read<StatisticBloc>().add(SetIsWeekly(value)),
+            //           activeTrackColor: Colors.lightBlueAccent,
+            //           activeColor: Colors.blue,
+            //           inactiveThumbColor: Colors.grey,
+            //           inactiveTrackColor: Colors.grey.withOpacity(0.5),
+            //         ),
+            //         Text('Weekly'), // Right side - Weekly text
+            //       ],
+            //     );
+            //   },
+            // ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: AnimatedSwitcher(

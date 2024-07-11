@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:sleep_tracker/src/index.dart';
 
 class AlarmSettingsView extends StatefulWidget {
@@ -18,7 +18,18 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
   void initState() {
     super.initState();
     NotificationService.initialize();
-    FirestoreService(GetDataFireBase.currentUserId).getAlarms();
+
+    FirestoreService(GetDataFireBase.currentUserId)
+        .getAlarms()
+        .first
+        .then((onData) {
+      context.read<SetAlarmBloc>().add(UpdateAllAlarms(onData));
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void _addAlarm() {
@@ -33,6 +44,8 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
       id: newAlarmId,
       bedtime: const TimeOfDay(hour: 22, minute: 0),
       wakeupTime: const TimeOfDay(hour: 6, minute: 0),
+      sleepDate: DateTime.now(),
+      wakeupDate: DateTime.now().add(const Duration(days: 1)),
       enabled: false,
       days: {
         'Monday': false,
@@ -54,114 +67,113 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
   }
 
   void _scheduleAlarms(Alarm alarm) {
-    for (var day in alarm.days.entries.where((entry) => entry.value)) {
-      int dayOffset = _getDayOffset(day.key);
-      final now = DateTime.now();
-      final bedtime = DateTime(now.year, now.month, now.day + dayOffset,
-          alarm.bedtime.hour, alarm.bedtime.minute);
-      final wakeupTime = DateTime(now.year, now.month, now.day + dayOffset,
-          alarm.wakeupTime.hour, alarm.wakeupTime.minute);
-
-      log('Scheduling alarm for ${day.key}');
-      log('Bedtime DateTime: ${bedtime.millisecondsSinceEpoch}');
-      log('Wakeup Time: $wakeupTime');
-
-      if (bedtime.isAfter(now)) {
-        AlarmManager.triggerAlarm(
-          alarm.id.hashCode,
-          'Bedtime Alarm',
-          'It\'s time to go to bed!',
-          bedtime,
-          type: 'bedtime',
-        );
-        // _setAutoInsert(alarm.id.hashCode, 'bedtime', bedtime, alarm.bedtime);
-      }
-
-      if (wakeupTime.isAfter(now)) {
-        AlarmManager.triggerAlarm(
-          alarm.id.hashCode + 1,
-          'Wakeup Alarm',
-          'It\'s time to wake up!',
-          wakeupTime,
-          type: 'wakeup',
-        );
-        // _setAutoInsert(
-        //     alarm.id.hashCode + 1, 'wakeup', wakeupTime, alarm.wakeupTime);
-      }
-    }
-  }
-
-  void _setAutoInsert(
-      int id, String type, DateTime scheduledTime, TimeOfDay presetTime) {
-    Timer(const Duration(minutes: 5), () async {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(GetDataFireBase.currentUserId)
-          .collection('sleep_data')
-          .doc(id.toString())
-          .get();
-
-      if (!doc.exists) {
-        final presetDateTime = DateTime(
-          scheduledTime.year,
-          scheduledTime.month,
-          scheduledTime.day,
-          presetTime.hour,
-          presetTime.minute,
-        );
-
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(GetDataFireBase.currentUserId)
-            .collection('sleep_data')
-            .doc(id.toString())
-            .set({
-          type: presetDateTime,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
-      }
-    });
-  }
-
-  int _getDayOffset(String day) {
     final now = DateTime.now();
-    final weekday = now.weekday;
 
-    switch (day) {
-      case 'Monday':
-        return (1 - weekday + 7) % 7;
-      case 'Tuesday':
-        return (2 - weekday + 7) % 7;
-      case 'Wednesday':
-        return (3 - weekday + 7) % 7;
-      case 'Thursday':
-        return (4 - weekday + 7) % 7;
-      case 'Friday':
-        return (5 - weekday + 7) % 7;
-      case 'Saturday':
-        return (6 - weekday + 7) % 7;
-      case 'Sunday':
-        return (7 - weekday + 7) % 7;
-      default:
-        return 0;
+    final sleepDateTime = DateTime(
+      alarm.sleepDate.year,
+      alarm.sleepDate.month,
+      alarm.sleepDate.day,
+      alarm.bedtime.hour,
+      alarm.bedtime.minute,
+    );
+
+    final wakeupDateTime = DateTime(
+      alarm.wakeupDate.year,
+      alarm.wakeupDate.month,
+      alarm.wakeupDate.day,
+      alarm.wakeupTime.hour,
+      alarm.wakeupTime.minute,
+    );
+
+    log('Scheduling alarm for ${alarm.id}');
+    log('Sleep DateTime: $sleepDateTime');
+    log('Wakeup DateTime: $wakeupDateTime');
+
+    if (sleepDateTime.isAfter(now)) {
+      AlarmManager.triggerAlarm(
+        alarm.id.hashCode,
+        'Bedtime Alarm',
+        'It\'s time to go to bed!',
+        sleepDateTime,
+        type: 'bedtime',
+      );
+    }
+
+    if (wakeupDateTime.isAfter(now)) {
+      AlarmManager.triggerAlarm(
+        alarm.id.hashCode + 1,
+        'Wakeup Alarm',
+        'It\'s time to wake up!',
+        wakeupDateTime,
+        type: 'wakeup',
+      );
     }
   }
 
-  Future<void> _selectTime(
+  Future<void> _selectDateTime(
       BuildContext context, Alarm alarm, bool isBedtime) async {
-    final TimeOfDay? picked = await showTimePicker(
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialTime: isBedtime ? alarm.bedtime : alarm.wakeupTime,
+      initialDate: isBedtime ? alarm.sleepDate : alarm.wakeupDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
     );
-    if (picked != null && context.mounted) {
-      final updatedAlarm = alarm.copyWith(
-        bedtime: isBedtime ? picked : alarm.bedtime,
-        wakeupTime: isBedtime ? alarm.wakeupTime : picked,
-      );
-      context.read<SetAlarmBloc>().add(UpdateAlarm(updatedAlarm));
 
-      if (alarm.enabled) {
-        _scheduleAlarms(updatedAlarm);
+    if (pickedDate != null && context.mounted) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: isBedtime ? alarm.bedtime : alarm.wakeupTime,
+      );
+
+      if (pickedTime != null) {
+        final pickedDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+
+        DateTime otherDateTime;
+        if (isBedtime) {
+          otherDateTime = DateTime(
+            alarm.wakeupDate.year,
+            alarm.wakeupDate.month,
+            alarm.wakeupDate.day,
+            alarm.wakeupTime.hour,
+            alarm.wakeupTime.minute,
+          );
+        } else {
+          otherDateTime = DateTime(
+            alarm.sleepDate.year,
+            alarm.sleepDate.month,
+            alarm.sleepDate.day,
+            alarm.bedtime.hour,
+            alarm.bedtime.minute,
+          );
+        }
+
+        if ((isBedtime && pickedDateTime.isBefore(otherDateTime)) ||
+            (!isBedtime && pickedDateTime.isAfter(otherDateTime))) {
+          final updatedAlarm = alarm.copyWith(
+            sleepDate: isBedtime ? pickedDateTime : alarm.sleepDate,
+            wakeupDate: isBedtime ? alarm.wakeupDate : pickedDateTime,
+            bedtime: isBedtime ? pickedTime : alarm.bedtime,
+            wakeupTime: isBedtime ? alarm.wakeupTime : pickedTime,
+          );
+
+          context.read<SetAlarmBloc>().add(UpdateAlarm(updatedAlarm));
+
+          if (alarm.enabled) {
+            _scheduleAlarms(updatedAlarm);
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Wakeup time must be greater than bedtime.'),
+            ),
+          );
+        }
       }
     }
   }
@@ -186,7 +198,10 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
     context.read<SetAlarmBloc>().add(UpdateAlarm(updatedAlarm));
   }
 
-  void _toggleEnabled(Alarm alarm, bool value) {
+  void _toggleEnabled(
+    Alarm alarm,
+    bool value,
+  ) {
     final updatedAlarm = alarm.copyWith(enabled: value);
     context.read<SetAlarmBloc>().add(UpdateAlarm(updatedAlarm));
 
@@ -237,8 +252,8 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
                       return AlarmCard(
                         alarm: alarm,
                         onDelete: () => _deleteAlarm(alarm),
-                        onSelectTime: (bool isBedtime) =>
-                            _selectTime(context, alarm, isBedtime),
+                        onSelectDateTime: (bool isBedtime) =>
+                            _selectDateTime(context, alarm, isBedtime),
                         onToggleDay: (String day) => _toggleDay(alarm, day),
                         onToggleEnabled: (bool value) =>
                             _toggleEnabled(alarm, value),
@@ -259,7 +274,7 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
 class AlarmCard extends StatelessWidget {
   final Alarm alarm;
   final VoidCallback onDelete;
-  final Function(bool) onSelectTime;
+  final Function(bool) onSelectDateTime;
   final Function(String) onToggleDay;
   final Function(bool) onToggleEnabled;
   final VoidCallback onToggleExpansion;
@@ -268,7 +283,7 @@ class AlarmCard extends StatelessWidget {
     super.key,
     required this.alarm,
     required this.onDelete,
-    required this.onSelectTime,
+    required this.onSelectDateTime,
     required this.onToggleDay,
     required this.onToggleEnabled,
     required this.onToggleExpansion,
@@ -284,54 +299,68 @@ class AlarmCard extends StatelessWidget {
           ListTile(
             onTap: onToggleExpansion,
             title: Text(
-              '${alarm.bedtime.format(context)} - ${alarm.wakeupTime.format(context)}',
+              '${DateFormat('EEEE').format(alarm.sleepDate)} ${alarm.bedtime.format(context)} - ${DateFormat('EEEE').format(alarm.wakeupDate)} ${alarm.wakeupTime.format(context)}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
+                  icon: const Icon(Icons.delete),
                   onPressed: onDelete,
                 ),
-                IconButton(
-                  icon: Icon(
-                      alarm.isExpanded ? Icons.expand_less : Icons.expand_more),
-                  onPressed: onToggleExpansion,
+                Switch(
+                  value: alarm.enabled,
+                  onChanged: onToggleEnabled,
+                ),
+                Icon(
+                  alarm.isExpanded ? Icons.expand_less : Icons.expand_more,
                 ),
               ],
             ),
           ),
-          if (alarm.isExpanded) ...[
-            ListTile(
-              title: const Text('Bedtime'),
-              trailing: Text(alarm.bedtime.format(context)),
-              onTap: () => onSelectTime(true),
+          if (alarm.isExpanded)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Divider(),
+                  ListTile(
+                    title: const Text('Bedtime'),
+                    subtitle: Text(
+                      '${DateFormat('EEEE').format(alarm.sleepDate)} ${alarm.bedtime.format(context)}',
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () => onSelectDateTime(true),
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Wakeup Time'),
+                    subtitle: Text(
+                      '${DateFormat('EEEE').format(alarm.wakeupDate)} ${alarm.wakeupTime.format(context)}',
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () => onSelectDateTime(false),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  const Text('Repeat'),
+                  Wrap(
+                    spacing: 4.0,
+                    children: alarm.days.keys.map((day) {
+                      return FilterChip(
+                        label: Text(day),
+                        selected: alarm.days[day]!,
+                        onSelected: (selected) => onToggleDay(day),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
             ),
-            ListTile(
-              title: const Text('Wakeup Time'),
-              trailing: Text(alarm.wakeupTime.format(context)),
-              onTap: () => onSelectTime(false),
-            ),
-            SwitchListTile(
-              title: const Text('Enable Alarm'),
-              value: alarm.enabled,
-              onChanged: onToggleEnabled,
-            ),
-            const Divider(),
-            const Text('Days'),
-            Column(
-              children: alarm.days.keys.map((String key) {
-                return CheckboxListTile(
-                  title: Text(key),
-                  value: alarm.days[key],
-                  onChanged: (bool? value) {
-                    onToggleDay(key);
-                  },
-                );
-              }).toList(),
-            ),
-          ],
         ],
       ),
     );
