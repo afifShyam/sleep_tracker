@@ -50,21 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCSiq4BWOdxIiGg727Z6GkKJP-CdgzThj4',
-    appId: '1:793896130228:android:7d5d31305de9a2f059a9e1',
-    messagingSenderId: '793896130228',
-    projectId: 'insomnia-project-e20be',
-    databaseURL: 'https://insomnia-project-e20be-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'insomnia-project-e20be.appspot.com',
+    apiKey: 'AIzaSyCSKmaffpKHBmW0QRc2tjg9QfJbv6jaEEA',
+    appId: '1:92888867930:android:70e4b33d97f685b31c6463',
+    messagingSenderId: '92888867930',
+    projectId: 'simple-sleep-apps',
+    storageBucket: 'simple-sleep-apps.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBPRF3pfSOKHZJEhvbkBOL17Y618c5d3Q0',
-    appId: '1:793896130228:ios:122590dedf20868b59a9e1',
-    messagingSenderId: '793896130228',
-    projectId: 'insomnia-project-e20be',
-    databaseURL: 'https://insomnia-project-e20be-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'insomnia-project-e20be.appspot.com',
+    apiKey: 'AIzaSyCThUh2cHqNW4ETpZkKa-SvZMCnXaZSOXU',
+    appId: '1:92888867930:ios:0c03fe2596d676d21c6463',
+    messagingSenderId: '92888867930',
+    projectId: 'simple-sleep-apps',
+    storageBucket: 'simple-sleep-apps.appspot.com',
     iosBundleId: 'com.example.sleepTracker',
   );
+
 }

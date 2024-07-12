@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyBPRF3pfSOKHZJEhvbkBOL17Y618c5d3Q0</string>
+	<string>AIzaSyCThUh2cHqNW4ETpZkKa-SvZMCnXaZSOXU</string>
 	<key>GCM_SENDER_ID</key>
-	<string>793896130228</string>
+	<string>92888867930</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.sleepTracker</string>
 	<key>PROJECT_ID</key>
-	<string>insomnia-project-e20be</string>
+	<string>simple-sleep-apps</string>
 	<key>STORAGE_BUCKET</key>
-	<string>insomnia-project-e20be.appspot.com</string>
+	<string>simple-sleep-apps.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,8 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:793896130228:ios:122590dedf20868b59a9e1</string>
-	<key>DATABASE_URL</key>
-	<string>https://insomnia-project-e20be-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+	<string>1:92888867930:ios:0c03fe2596d676d21c6463</string>
 </dict>
 </plist>
