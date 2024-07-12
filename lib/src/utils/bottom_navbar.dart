@@ -7,7 +7,7 @@ import 'package:sleep_tracker/src/index.dart';
 import 'package:sleep_tracker/src/screen/info/question_start_page.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({Key? key}) : super(key: key);
+  const BottomNavBar({super.key});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();

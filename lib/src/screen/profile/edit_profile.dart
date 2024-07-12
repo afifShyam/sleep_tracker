@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,6 +25,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController _ageController;
   late TextEditingController _genderController;
   late TextEditingController _passwordController;
+  bool _isPasswordVisible = false;
 
   @override
   void initState() {
@@ -50,28 +53,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: STColor.darkYellow,
+      backgroundColor: const Color(0xFF2C3E50),
       appBar: AppBar(
-        backgroundColor: STColor.darkBlueBackground,
-        title: Text(
+        backgroundColor: const Color(0xFF1F2D3D),
+        title: const Text(
           'Edit Profile',
-          style: TextStyleST.textStyle.appbar.copyWith(color: STColor.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
         leading: IconButton(
           onPressed: () => ProfileStartPage.of(context).exit(context),
           icon: const Icon(
             Icons.arrow_back_ios_new,
-            color: STColor.white,
+            color: Colors.white,
           ),
         ),
       ),
       body: BlocListener<ProfileBloc, ProfileState>(
-        listener: (context, state) {
+        listener: (ctx, state) {
           if (state.profileStatus == ProfileStatus.updated) {
-            // ProfileStartPage.of(context).exit(context);
-            Navigator.of(context)
-                .pushReplacementNamed(ProfileRoute.dashProfileRoute);
+            ProfileStartPage.of(context).exit(context);
           }
         },
         child: BlocBuilder<ProfileBloc, ProfileState>(
@@ -84,55 +89,61 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: Text(
-                          'Edit your profile information',
-                          style: TextStyle(
-                            fontSize: 24.0.r,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey,
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 20.0),
                       Center(
                         child: _buildProfilePictureField(
-                            context,
-                            'Profile Picture',
-                            Icons.image,
-                            state.image!.isEmpty
-                                ? widget.user!.imageUrl.isNotEmpty
-                                    ? widget.user!.imageUrl
-                                    : null
-                                : state.image!),
+                          context,
+                          'Profile Picture',
+                          Icons.image,
+                          state.image!.isEmpty
+                              ? widget.user!.imageUrl.isNotEmpty
+                                  ? widget.user!.imageUrl
+                                  : null
+                              : state.image!,
+                        ),
                       ),
                       const SizedBox(height: 20.0),
                       _buildTextField(
-                          'Name', Icons.person, _nameController, false),
-                      SizedBox(
-                        height: 20.h,
+                        'Name',
+                        Icons.person,
+                        _nameController,
+                        false,
                       ),
-                      _buildTextField('Username', Icons.account_circle,
-                          _usernameController, false),
-                      SizedBox(
-                        height: 20.h,
-                      ),
+                      SizedBox(height: 20.h),
                       _buildTextField(
-                          'Phone', Icons.phone, _phoneController, false),
-                      SizedBox(
-                        height: 20.h,
+                        'Username',
+                        Icons.account_circle,
+                        _usernameController,
+                        false,
                       ),
-                      _buildTextField('Age', Icons.cake, _ageController, false),
-                      SizedBox(
-                        height: 20.h,
-                      ),
+                      SizedBox(height: 20.h),
                       _buildTextField(
-                          'Gender', Icons.person, _genderController, false),
-                      SizedBox(
-                        height: 20.h,
+                        'Phone',
+                        Icons.phone,
+                        _phoneController,
+                        false,
                       ),
+                      SizedBox(height: 20.h),
                       _buildTextField(
-                          'Password', Icons.lock, _passwordController, true),
+                        'Age',
+                        Icons.cake,
+                        _ageController,
+                        false,
+                      ),
+                      SizedBox(height: 20.h),
+                      _buildTextField(
+                        'Gender',
+                        Icons.person,
+                        _genderController,
+                        false,
+                      ),
+                      SizedBox(height: 20.h),
+                      _buildTextField(
+                        'Password',
+                        Icons.lock,
+                        _passwordController,
+                        true,
+                      ),
                       const SizedBox(height: 20.0),
                       ElevatedButton(
                         onPressed: () {
@@ -159,7 +170,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           minimumSize: const Size(double.infinity, 50.0),
-                          backgroundColor: Colors.blue,
+                          backgroundColor:
+                              const Color(0xFF3498DB), // Light Blue
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -188,11 +200,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
       TextEditingController controller, bool isPassword) {
     return TextFormField(
       controller: controller,
+      style: const TextStyle(color: STColor.white),
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
-      obscureText: isPassword,
+      obscureText: isPassword ? !_isPasswordVisible : false,
       decoration: InputDecoration(
+        labelStyle:
+            TextStyleST.textStyle.bodyMedium.copyWith(color: STColor.white),
         labelText: label,
-        prefixIcon: Icon(icon),
+        prefixIcon: Icon(icon, color: STColor.white),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: _isPasswordVisible ? STColor.white : STColor.red,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              )
+            : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
@@ -213,13 +241,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       final pickedFile =
           await imagePicker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        // You can handle the picked image file here
-        // For example, you can upload it to a server or display it in your UI
         final String imagePath = pickedFile.path;
         if (mounted) {
           context.read<ProfileBloc>().add(StoreImage(image: imagePath));
         }
-        // Perform any required logic with the image path
       }
     }
 
@@ -236,7 +261,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               color: Colors.black.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 2,
-              offset: const Offset(0, 2), // changes position of shadow
+              offset: const Offset(0, 2),
             ),
           ],
         ),

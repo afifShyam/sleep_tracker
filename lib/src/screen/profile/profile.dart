@@ -61,9 +61,9 @@ class _ProfileState extends State<Profile> {
                           bottom: 0,
                           child: IconButton(
                             onPressed: () {
-                              Navigator.of(context, rootNavigator: true)
-                                  .pushNamed(ProfileRoute.editProfileRoute,
-                                      arguments: {
+                              Navigator.of(context).pushNamed(
+                                  ProfileRoute.editProfileRoute,
+                                  arguments: {
                                     'user': profileData.profileModel,
                                   });
                             },

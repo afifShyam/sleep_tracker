@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:sleep_tracker/src/index.dart';
@@ -106,10 +107,7 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
       );
 
       add(GetData(id: GetDataFireBase.currentUserId));
-
-      emit(
-        state.copyWith(profileStatus: ProfileStatus.updated),
-      );
+      emit(state.copyWith(profileStatus: ProfileStatus.updated));
     } catch (e) {
       emit(
         state.copyWith(

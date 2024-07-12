@@ -35,6 +35,8 @@ class ProfileStartPageState extends State<ProfileStartPage> {
   }
 
   void exit(BuildContext ctx) {
+    log('exit length: ${profileRoute.routeHistory.length}');
+
     if (profileRoute.routeHistory.length <= 1) {
       // profileRoute.clearRouteHistory();
       Navigator.of(context).pop();
