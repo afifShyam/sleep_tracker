@@ -81,29 +81,25 @@ class FirestoreService {
 class QuestionFirestore {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<List<QuestionModel>> getQuestions() async {
-    final questionsSnapshot = await _db.collection('question').get();
+  Future<List<QuestionModel>> getQuestions(String categoryId) async {
+    final questionsSnapshot = await _db
+        .collection('categories')
+        .doc(categoryId)
+        .collection('questions')
+        .get();
     final questions = <QuestionModel>[];
 
     for (final questionDoc in questionsSnapshot.docs) {
       final questionId = questionDoc.id;
       final data = questionDoc.data();
-      final text = data['questions'] as String;
+      final text = data['questionText'] as String;
 
-      // Fetch the answers and solutions
       final options = <String>[];
       final solutions = <String>[];
 
-      for (var option in ['a', 'b', 'c', 'd']) {
-        final answerDoc = await _db
-            .collection('question')
-            .doc(questionId)
-            .collection('answer_$option')
-            .doc(option)
-            .get();
-        final answerData = answerDoc.data();
-        options.add(answerData!['answer_$option'] as String);
-        solutions.add(answerData['solution'] as String);
+      for (var option in ['A', 'B', 'C', 'D']) {
+        options.add(data['answers'][option]);
+        solutions.add(data['solutions'][option]);
       }
 
       questions.add(QuestionModel(

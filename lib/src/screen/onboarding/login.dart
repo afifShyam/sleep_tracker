@@ -38,6 +38,10 @@ class _LoginPageState extends State<LoginPage> {
         if (state.registerStatus == RegisterStatus.completed) {
           Navigator.of(context).pushNamed(HomepageRoute.bottomRoute);
         }
+        if (state.registerStatus == RegisterStatus.completed &&
+            state.loggedUser == UserLogged.admin) {
+          Navigator.of(context).pushNamed(HomepageRoute.adminRoute);
+        }
       },
       builder: (context, state) {
         return Scaffold(

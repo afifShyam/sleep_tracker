@@ -4,10 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sleep_tracker/src/index.dart';
 import 'package:sleep_tracker/src/screen/info/question_start_page.dart';
 
-class QuestionPage extends StatelessWidget {
-  final PageController _pageController = PageController();
+class QuestionPage extends StatefulWidget {
+  const QuestionPage({super.key});
 
-  QuestionPage({super.key});
+  @override
+  State<QuestionPage> createState() => _QuestionPageState();
+}
+
+class _QuestionPageState extends State<QuestionPage> {
+  final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +31,28 @@ class QuestionPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new),
         ),
       ),
-      body: BlocBuilder<QuestionsBloc, QuestionsState>(
+      body: BlocConsumer<QuestionsBloc, QuestionsState>(
+        listener: (context, state) {},
         builder: (context, state) {
+          if (state.questionStatus == QuestionStatus.error) {
+            return const Center(child: Text('Error loading questions'));
+          } else if (state.questionStatus == QuestionStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           return PageView.builder(
             controller: _pageController,
-            itemCount: state.questions.length,
+            itemCount: state.questions.length + 1,
             itemBuilder: (context, index) {
+              if (index == state.questions.length) {
+                // Summary Page
+                return _buildSummaryPage(context, state);
+              }
+
               final question = state.questions[index];
               final userAnswer = state.userAnswers[index];
-              final shownSolution = state.shownSolutions[index];
+              final shownSolutions = state.shownSolutions[index];
+              final optionLabels = ['A', 'B', 'C', 'D'];
 
               return Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -50,7 +68,6 @@ class QuestionPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 24.0),
                     ...List.generate(question.answerType.length, (optionIndex) {
-                      final optionLabels = ['A', 'B', 'C', 'D'];
                       final isSelected = userAnswer == optionIndex;
 
                       return GestureDetector(
@@ -120,7 +137,7 @@ class QuestionPage extends StatelessWidget {
                       );
                     }),
                     const SizedBox(height: 24.0),
-                    if (shownSolution != null)
+                    if (shownSolutions != null)
                       Container(
                         padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
@@ -128,12 +145,24 @@ class QuestionPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8.0),
                           border: Border.all(color: Colors.green),
                         ),
-                        child: Text(
-                          'Solution: $shownSolution',
-                          style: const TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Solutions:',
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            ...List.generate(shownSolutions.length,
+                                (solutionIndex) {
+                              return Text(
+                                '${optionLabels[solutionIndex]}: ${shownSolutions[solutionIndex]}',
+                                style: const TextStyle(color: Colors.green),
+                              );
+                            }),
+                          ],
                         ),
                       ),
                     const Spacer(),
@@ -186,6 +215,42 @@ class QuestionPage extends StatelessWidget {
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildSummaryPage(BuildContext context, QuestionsState state) {
+    final userAnswers = state.userAnswers;
+    final questions = state.questions;
+    final optionLabels = ['A', 'B', 'C', 'D'];
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Summary',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          ...userAnswers.entries.map((entry) {
+            final questionIndex = entry.key;
+            final userAnswerIndex = entry.value;
+            final question = questions[questionIndex];
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                'Q${questionIndex + 1}: ${question.question}\nYour answer: ${optionLabels[userAnswerIndex!]} - ${question.answerType[userAnswerIndex]}',
+                style: const TextStyle(fontSize: 16.0),
+              ),
+            );
+          }),
+        ],
       ),
     );
   }

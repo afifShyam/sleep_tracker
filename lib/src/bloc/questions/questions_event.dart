@@ -2,10 +2,10 @@ part of 'questions_bloc.dart';
 
 @freezed
 class QuestionsEvent with _$QuestionsEvent {
-  const factory QuestionsEvent.getQuestion(int numQuestion) = GetQuestions;
-  factory QuestionsEvent.resetStatus() = ResetStatus;
-  factory QuestionsEvent.answerQuestion(
-      final int questionIndex, final int selectedOptionIndex) = AnswerQuestion;
-  factory QuestionsEvent.showSolution(
-      final int questionIndex, final String solution) = ShowSolution;
+  const factory QuestionsEvent.getQuestions(String categoryId) = GetQuestions;
+  const factory QuestionsEvent.resetStatus() = ResetStatus;
+  const factory QuestionsEvent.answerQuestion(
+      int questionIndex, int selectedOptionIndex) = AnswerQuestion;
+  const factory QuestionsEvent.showSolution(
+      int questionIndex, List<String?> solutions) = ShowSolution;
 }

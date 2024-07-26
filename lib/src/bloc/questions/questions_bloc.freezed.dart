@@ -21,9 +21,11 @@ QuestionsState _$QuestionsStateFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$QuestionsState {
   List<QuestionModel> get questions => throw _privateConstructorUsedError;
+  Map<int, int?> get userAnswers =>
+      throw _privateConstructorUsedError; // Map of question index to selected option index
+  Map<int, List<String?>> get shownSolutions =>
+      throw _privateConstructorUsedError; // Map of question index to shown solutions
   QuestionStatus get questionStatus => throw _privateConstructorUsedError;
-  Map<int, int?> get userAnswers => throw _privateConstructorUsedError;
-  Map<int, String?> get shownSolutions => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,9 +41,9 @@ abstract class $QuestionsStateCopyWith<$Res> {
   @useResult
   $Res call(
       {List<QuestionModel> questions,
-      QuestionStatus questionStatus,
       Map<int, int?> userAnswers,
-      Map<int, String?> shownSolutions});
+      Map<int, List<String?>> shownSolutions,
+      QuestionStatus questionStatus});
 }
 
 /// @nodoc
@@ -58,19 +60,15 @@ class _$QuestionsStateCopyWithImpl<$Res, $Val extends QuestionsState>
   @override
   $Res call({
     Object? questions = null,
-    Object? questionStatus = null,
     Object? userAnswers = null,
     Object? shownSolutions = null,
+    Object? questionStatus = null,
   }) {
     return _then(_value.copyWith(
       questions: null == questions
           ? _value.questions
           : questions // ignore: cast_nullable_to_non_nullable
               as List<QuestionModel>,
-      questionStatus: null == questionStatus
-          ? _value.questionStatus
-          : questionStatus // ignore: cast_nullable_to_non_nullable
-              as QuestionStatus,
       userAnswers: null == userAnswers
           ? _value.userAnswers
           : userAnswers // ignore: cast_nullable_to_non_nullable
@@ -78,7 +76,11 @@ class _$QuestionsStateCopyWithImpl<$Res, $Val extends QuestionsState>
       shownSolutions: null == shownSolutions
           ? _value.shownSolutions
           : shownSolutions // ignore: cast_nullable_to_non_nullable
-              as Map<int, String?>,
+              as Map<int, List<String?>>,
+      questionStatus: null == questionStatus
+          ? _value.questionStatus
+          : questionStatus // ignore: cast_nullable_to_non_nullable
+              as QuestionStatus,
     ) as $Val);
   }
 }
@@ -93,9 +95,9 @@ abstract class _$$QuestionsStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {List<QuestionModel> questions,
-      QuestionStatus questionStatus,
       Map<int, int?> userAnswers,
-      Map<int, String?> shownSolutions});
+      Map<int, List<String?>> shownSolutions,
+      QuestionStatus questionStatus});
 }
 
 /// @nodoc
@@ -110,19 +112,15 @@ class __$$QuestionsStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? questions = null,
-    Object? questionStatus = null,
     Object? userAnswers = null,
     Object? shownSolutions = null,
+    Object? questionStatus = null,
   }) {
     return _then(_$QuestionsStateImpl(
       questions: null == questions
           ? _value._questions
           : questions // ignore: cast_nullable_to_non_nullable
               as List<QuestionModel>,
-      questionStatus: null == questionStatus
-          ? _value.questionStatus
-          : questionStatus // ignore: cast_nullable_to_non_nullable
-              as QuestionStatus,
       userAnswers: null == userAnswers
           ? _value._userAnswers
           : userAnswers // ignore: cast_nullable_to_non_nullable
@@ -130,7 +128,11 @@ class __$$QuestionsStateImplCopyWithImpl<$Res>
       shownSolutions: null == shownSolutions
           ? _value._shownSolutions
           : shownSolutions // ignore: cast_nullable_to_non_nullable
-              as Map<int, String?>,
+              as Map<int, List<String?>>,
+      questionStatus: null == questionStatus
+          ? _value.questionStatus
+          : questionStatus // ignore: cast_nullable_to_non_nullable
+              as QuestionStatus,
     ));
   }
 }
@@ -138,11 +140,11 @@ class __$$QuestionsStateImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$QuestionsStateImpl implements _QuestionsState {
-  _$QuestionsStateImpl(
+  const _$QuestionsStateImpl(
       {required final List<QuestionModel> questions,
-      required this.questionStatus,
       required final Map<int, int?> userAnswers,
-      required final Map<int, String?> shownSolutions})
+      required final Map<int, List<String?>> shownSolutions,
+      required this.questionStatus})
       : _questions = questions,
         _userAnswers = userAnswers,
         _shownSolutions = shownSolutions;
@@ -158,8 +160,6 @@ class _$QuestionsStateImpl implements _QuestionsState {
     return EqualUnmodifiableListView(_questions);
   }
 
-  @override
-  final QuestionStatus questionStatus;
   final Map<int, int?> _userAnswers;
   @override
   Map<int, int?> get userAnswers {
@@ -168,17 +168,23 @@ class _$QuestionsStateImpl implements _QuestionsState {
     return EqualUnmodifiableMapView(_userAnswers);
   }
 
-  final Map<int, String?> _shownSolutions;
+// Map of question index to selected option index
+  final Map<int, List<String?>> _shownSolutions;
+// Map of question index to selected option index
   @override
-  Map<int, String?> get shownSolutions {
+  Map<int, List<String?>> get shownSolutions {
     if (_shownSolutions is EqualUnmodifiableMapView) return _shownSolutions;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_shownSolutions);
   }
 
+// Map of question index to shown solutions
+  @override
+  final QuestionStatus questionStatus;
+
   @override
   String toString() {
-    return 'QuestionsState(questions: $questions, questionStatus: $questionStatus, userAnswers: $userAnswers, shownSolutions: $shownSolutions)';
+    return 'QuestionsState(questions: $questions, userAnswers: $userAnswers, shownSolutions: $shownSolutions, questionStatus: $questionStatus)';
   }
 
   @override
@@ -188,12 +194,12 @@ class _$QuestionsStateImpl implements _QuestionsState {
             other is _$QuestionsStateImpl &&
             const DeepCollectionEquality()
                 .equals(other._questions, _questions) &&
-            (identical(other.questionStatus, questionStatus) ||
-                other.questionStatus == questionStatus) &&
             const DeepCollectionEquality()
                 .equals(other._userAnswers, _userAnswers) &&
             const DeepCollectionEquality()
-                .equals(other._shownSolutions, _shownSolutions));
+                .equals(other._shownSolutions, _shownSolutions) &&
+            (identical(other.questionStatus, questionStatus) ||
+                other.questionStatus == questionStatus));
   }
 
   @JsonKey(ignore: true)
@@ -201,9 +207,9 @@ class _$QuestionsStateImpl implements _QuestionsState {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_questions),
-      questionStatus,
       const DeepCollectionEquality().hash(_userAnswers),
-      const DeepCollectionEquality().hash(_shownSolutions));
+      const DeepCollectionEquality().hash(_shownSolutions),
+      questionStatus);
 
   @JsonKey(ignore: true)
   @override
@@ -221,11 +227,11 @@ class _$QuestionsStateImpl implements _QuestionsState {
 }
 
 abstract class _QuestionsState implements QuestionsState {
-  factory _QuestionsState(
+  const factory _QuestionsState(
       {required final List<QuestionModel> questions,
-      required final QuestionStatus questionStatus,
       required final Map<int, int?> userAnswers,
-      required final Map<int, String?> shownSolutions}) = _$QuestionsStateImpl;
+      required final Map<int, List<String?>> shownSolutions,
+      required final QuestionStatus questionStatus}) = _$QuestionsStateImpl;
 
   factory _QuestionsState.fromJson(Map<String, dynamic> json) =
       _$QuestionsStateImpl.fromJson;
@@ -233,11 +239,11 @@ abstract class _QuestionsState implements QuestionsState {
   @override
   List<QuestionModel> get questions;
   @override
-  QuestionStatus get questionStatus;
-  @override
   Map<int, int?> get userAnswers;
-  @override
-  Map<int, String?> get shownSolutions;
+  @override // Map of question index to selected option index
+  Map<int, List<String?>> get shownSolutions;
+  @override // Map of question index to shown solutions
+  QuestionStatus get questionStatus;
   @override
   @JsonKey(ignore: true)
   _$$QuestionsStateImplCopyWith<_$QuestionsStateImpl> get copyWith =>
@@ -248,35 +254,36 @@ abstract class _QuestionsState implements QuestionsState {
 mixin _$QuestionsEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int numQuestion) getQuestion,
+    required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
     required TResult Function(int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, String solution) showSolution,
+    required TResult Function(int questionIndex, List<String?> solutions)
+        showSolution,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int numQuestion)? getQuestion,
+    TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
     TResult? Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, String solution)? showSolution,
+    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int numQuestion)? getQuestion,
+    TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
     TResult Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, String solution)? showSolution,
+    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(GetQuestions value) getQuestion,
+    required TResult Function(GetQuestions value) getQuestions,
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
@@ -284,7 +291,7 @@ mixin _$QuestionsEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(GetQuestions value)? getQuestion,
+    TResult? Function(GetQuestions value)? getQuestions,
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
@@ -292,7 +299,7 @@ mixin _$QuestionsEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(GetQuestions value)? getQuestion,
+    TResult Function(GetQuestions value)? getQuestions,
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
@@ -325,7 +332,7 @@ abstract class _$$GetQuestionsImplCopyWith<$Res> {
           _$GetQuestionsImpl value, $Res Function(_$GetQuestionsImpl) then) =
       __$$GetQuestionsImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int numQuestion});
+  $Res call({String categoryId});
 }
 
 /// @nodoc
@@ -339,13 +346,13 @@ class __$$GetQuestionsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? numQuestion = null,
+    Object? categoryId = null,
   }) {
     return _then(_$GetQuestionsImpl(
-      null == numQuestion
-          ? _value.numQuestion
-          : numQuestion // ignore: cast_nullable_to_non_nullable
-              as int,
+      null == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -353,14 +360,14 @@ class __$$GetQuestionsImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$GetQuestionsImpl implements GetQuestions {
-  const _$GetQuestionsImpl(this.numQuestion);
+  const _$GetQuestionsImpl(this.categoryId);
 
   @override
-  final int numQuestion;
+  final String categoryId;
 
   @override
   String toString() {
-    return 'QuestionsEvent.getQuestion(numQuestion: $numQuestion)';
+    return 'QuestionsEvent.getQuestions(categoryId: $categoryId)';
   }
 
   @override
@@ -368,12 +375,12 @@ class _$GetQuestionsImpl implements GetQuestions {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$GetQuestionsImpl &&
-            (identical(other.numQuestion, numQuestion) ||
-                other.numQuestion == numQuestion));
+            (identical(other.categoryId, categoryId) ||
+                other.categoryId == categoryId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, numQuestion);
+  int get hashCode => Object.hash(runtimeType, categoryId);
 
   @JsonKey(ignore: true)
   @override
@@ -384,39 +391,40 @@ class _$GetQuestionsImpl implements GetQuestions {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int numQuestion) getQuestion,
+    required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
     required TResult Function(int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, String solution) showSolution,
+    required TResult Function(int questionIndex, List<String?> solutions)
+        showSolution,
   }) {
-    return getQuestion(numQuestion);
+    return getQuestions(categoryId);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int numQuestion)? getQuestion,
+    TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
     TResult? Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, String solution)? showSolution,
+    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
   }) {
-    return getQuestion?.call(numQuestion);
+    return getQuestions?.call(categoryId);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int numQuestion)? getQuestion,
+    TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
     TResult Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, String solution)? showSolution,
+    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
     required TResult orElse(),
   }) {
-    if (getQuestion != null) {
-      return getQuestion(numQuestion);
+    if (getQuestions != null) {
+      return getQuestions(categoryId);
     }
     return orElse();
   }
@@ -424,45 +432,45 @@ class _$GetQuestionsImpl implements GetQuestions {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(GetQuestions value) getQuestion,
+    required TResult Function(GetQuestions value) getQuestions,
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
   }) {
-    return getQuestion(this);
+    return getQuestions(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(GetQuestions value)? getQuestion,
+    TResult? Function(GetQuestions value)? getQuestions,
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
   }) {
-    return getQuestion?.call(this);
+    return getQuestions?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(GetQuestions value)? getQuestion,
+    TResult Function(GetQuestions value)? getQuestions,
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
     required TResult orElse(),
   }) {
-    if (getQuestion != null) {
-      return getQuestion(this);
+    if (getQuestions != null) {
+      return getQuestions(this);
     }
     return orElse();
   }
 }
 
 abstract class GetQuestions implements QuestionsEvent {
-  const factory GetQuestions(final int numQuestion) = _$GetQuestionsImpl;
+  const factory GetQuestions(final String categoryId) = _$GetQuestionsImpl;
 
-  int get numQuestion;
+  String get categoryId;
   @JsonKey(ignore: true)
   _$$GetQuestionsImplCopyWith<_$GetQuestionsImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -487,7 +495,7 @@ class __$$ResetStatusImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ResetStatusImpl implements ResetStatus {
-  _$ResetStatusImpl();
+  const _$ResetStatusImpl();
 
   @override
   String toString() {
@@ -506,11 +514,12 @@ class _$ResetStatusImpl implements ResetStatus {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int numQuestion) getQuestion,
+    required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
     required TResult Function(int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, String solution) showSolution,
+    required TResult Function(int questionIndex, List<String?> solutions)
+        showSolution,
   }) {
     return resetStatus();
   }
@@ -518,11 +527,11 @@ class _$ResetStatusImpl implements ResetStatus {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int numQuestion)? getQuestion,
+    TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
     TResult? Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, String solution)? showSolution,
+    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
   }) {
     return resetStatus?.call();
   }
@@ -530,11 +539,11 @@ class _$ResetStatusImpl implements ResetStatus {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int numQuestion)? getQuestion,
+    TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
     TResult Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, String solution)? showSolution,
+    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
     required TResult orElse(),
   }) {
     if (resetStatus != null) {
@@ -546,7 +555,7 @@ class _$ResetStatusImpl implements ResetStatus {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(GetQuestions value) getQuestion,
+    required TResult Function(GetQuestions value) getQuestions,
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
@@ -557,7 +566,7 @@ class _$ResetStatusImpl implements ResetStatus {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(GetQuestions value)? getQuestion,
+    TResult? Function(GetQuestions value)? getQuestions,
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
@@ -568,7 +577,7 @@ class _$ResetStatusImpl implements ResetStatus {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(GetQuestions value)? getQuestion,
+    TResult Function(GetQuestions value)? getQuestions,
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
@@ -582,7 +591,7 @@ class _$ResetStatusImpl implements ResetStatus {
 }
 
 abstract class ResetStatus implements QuestionsEvent {
-  factory ResetStatus() = _$ResetStatusImpl;
+  const factory ResetStatus() = _$ResetStatusImpl;
 }
 
 /// @nodoc
@@ -624,7 +633,7 @@ class __$$AnswerQuestionImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$AnswerQuestionImpl implements AnswerQuestion {
-  _$AnswerQuestionImpl(this.questionIndex, this.selectedOptionIndex);
+  const _$AnswerQuestionImpl(this.questionIndex, this.selectedOptionIndex);
 
   @override
   final int questionIndex;
@@ -661,11 +670,12 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int numQuestion) getQuestion,
+    required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
     required TResult Function(int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, String solution) showSolution,
+    required TResult Function(int questionIndex, List<String?> solutions)
+        showSolution,
   }) {
     return answerQuestion(questionIndex, selectedOptionIndex);
   }
@@ -673,11 +683,11 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int numQuestion)? getQuestion,
+    TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
     TResult? Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, String solution)? showSolution,
+    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
   }) {
     return answerQuestion?.call(questionIndex, selectedOptionIndex);
   }
@@ -685,11 +695,11 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int numQuestion)? getQuestion,
+    TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
     TResult Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, String solution)? showSolution,
+    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
     required TResult orElse(),
   }) {
     if (answerQuestion != null) {
@@ -701,7 +711,7 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(GetQuestions value) getQuestion,
+    required TResult Function(GetQuestions value) getQuestions,
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
@@ -712,7 +722,7 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(GetQuestions value)? getQuestion,
+    TResult? Function(GetQuestions value)? getQuestions,
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
@@ -723,7 +733,7 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(GetQuestions value)? getQuestion,
+    TResult Function(GetQuestions value)? getQuestions,
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
@@ -737,7 +747,7 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
 }
 
 abstract class AnswerQuestion implements QuestionsEvent {
-  factory AnswerQuestion(
+  const factory AnswerQuestion(
           final int questionIndex, final int selectedOptionIndex) =
       _$AnswerQuestionImpl;
 
@@ -754,7 +764,7 @@ abstract class _$$ShowSolutionImplCopyWith<$Res> {
           _$ShowSolutionImpl value, $Res Function(_$ShowSolutionImpl) then) =
       __$$ShowSolutionImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int questionIndex, String solution});
+  $Res call({int questionIndex, List<String?> solutions});
 }
 
 /// @nodoc
@@ -769,17 +779,17 @@ class __$$ShowSolutionImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? questionIndex = null,
-    Object? solution = null,
+    Object? solutions = null,
   }) {
     return _then(_$ShowSolutionImpl(
       null == questionIndex
           ? _value.questionIndex
           : questionIndex // ignore: cast_nullable_to_non_nullable
               as int,
-      null == solution
-          ? _value.solution
-          : solution // ignore: cast_nullable_to_non_nullable
-              as String,
+      null == solutions
+          ? _value._solutions
+          : solutions // ignore: cast_nullable_to_non_nullable
+              as List<String?>,
     ));
   }
 }
@@ -787,16 +797,22 @@ class __$$ShowSolutionImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ShowSolutionImpl implements ShowSolution {
-  _$ShowSolutionImpl(this.questionIndex, this.solution);
+  const _$ShowSolutionImpl(this.questionIndex, final List<String?> solutions)
+      : _solutions = solutions;
 
   @override
   final int questionIndex;
+  final List<String?> _solutions;
   @override
-  final String solution;
+  List<String?> get solutions {
+    if (_solutions is EqualUnmodifiableListView) return _solutions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_solutions);
+  }
 
   @override
   String toString() {
-    return 'QuestionsEvent.showSolution(questionIndex: $questionIndex, solution: $solution)';
+    return 'QuestionsEvent.showSolution(questionIndex: $questionIndex, solutions: $solutions)';
   }
 
   @override
@@ -806,12 +822,13 @@ class _$ShowSolutionImpl implements ShowSolution {
             other is _$ShowSolutionImpl &&
             (identical(other.questionIndex, questionIndex) ||
                 other.questionIndex == questionIndex) &&
-            (identical(other.solution, solution) ||
-                other.solution == solution));
+            const DeepCollectionEquality()
+                .equals(other._solutions, _solutions));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, questionIndex, solution);
+  int get hashCode => Object.hash(runtimeType, questionIndex,
+      const DeepCollectionEquality().hash(_solutions));
 
   @JsonKey(ignore: true)
   @override
@@ -822,39 +839,40 @@ class _$ShowSolutionImpl implements ShowSolution {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int numQuestion) getQuestion,
+    required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
     required TResult Function(int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, String solution) showSolution,
+    required TResult Function(int questionIndex, List<String?> solutions)
+        showSolution,
   }) {
-    return showSolution(questionIndex, solution);
+    return showSolution(questionIndex, solutions);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int numQuestion)? getQuestion,
+    TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
     TResult? Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, String solution)? showSolution,
+    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
   }) {
-    return showSolution?.call(questionIndex, solution);
+    return showSolution?.call(questionIndex, solutions);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int numQuestion)? getQuestion,
+    TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
     TResult Function(int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, String solution)? showSolution,
+    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
     required TResult orElse(),
   }) {
     if (showSolution != null) {
-      return showSolution(questionIndex, solution);
+      return showSolution(questionIndex, solutions);
     }
     return orElse();
   }
@@ -862,7 +880,7 @@ class _$ShowSolutionImpl implements ShowSolution {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(GetQuestions value) getQuestion,
+    required TResult Function(GetQuestions value) getQuestions,
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
@@ -873,7 +891,7 @@ class _$ShowSolutionImpl implements ShowSolution {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(GetQuestions value)? getQuestion,
+    TResult? Function(GetQuestions value)? getQuestions,
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
@@ -884,7 +902,7 @@ class _$ShowSolutionImpl implements ShowSolution {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(GetQuestions value)? getQuestion,
+    TResult Function(GetQuestions value)? getQuestions,
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
@@ -898,11 +916,12 @@ class _$ShowSolutionImpl implements ShowSolution {
 }
 
 abstract class ShowSolution implements QuestionsEvent {
-  factory ShowSolution(final int questionIndex, final String solution) =
+  const factory ShowSolution(
+          final int questionIndex, final List<String?> solutions) =
       _$ShowSolutionImpl;
 
   int get questionIndex;
-  String get solution;
+  List<String?> get solutions;
   @JsonKey(ignore: true)
   _$$ShowSolutionImplCopyWith<_$ShowSolutionImpl> get copyWith =>
       throw _privateConstructorUsedError;

@@ -15,6 +15,7 @@ class HomepageRoute implements ManagerRouter {
   static const registerRoute = '$homeRoute/register';
   static const logout = '$homeRoute/logout';
   static const alarmSettingRoute = '$homeRoute/alarm_setting';
+  static const adminRoute = '$homeRoute/admin_route';
 
   final List<String> routeHistory = [];
 
@@ -85,6 +86,8 @@ class HomepageRoute implements ManagerRouter {
         page = const HomePage();
       case alarmSettingRoute:
         page = const AlarmSettingsView();
+      case adminRoute:
+        page = const AdminQuestion();
       default:
         page = const SplashScreen();
     }

@@ -13,6 +13,7 @@ enum UserLogged {
   signedIn,
   signedOut,
   errorSign,
+  admin,
 }
 
 // Factory method to convert JSON string to DocumentReference

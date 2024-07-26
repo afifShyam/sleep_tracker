@@ -38,4 +38,5 @@ const _$UserLoggedEnumMap = {
   UserLogged.signedIn: 'signedIn',
   UserLogged.signedOut: 'signedOut',
   UserLogged.errorSign: 'errorSign',
+  UserLogged.admin: 'admin',
 };

@@ -112,10 +112,15 @@ class _AlarmSettingsViewState extends State<AlarmSettingsView> {
 
   Future<void> _selectDateTime(
       BuildContext context, Alarm alarm, bool isBedtime) async {
+    final DateTime currentDate = DateTime.now();
+    final DateTime initialDate = isBedtime ? alarm.sleepDate : alarm.wakeupDate;
+    final DateTime adjustedInitialDate =
+        initialDate.isBefore(currentDate) ? currentDate : initialDate;
+
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: isBedtime ? alarm.sleepDate : alarm.wakeupDate,
-      firstDate: DateTime.now(),
+      initialDate: adjustedInitialDate,
+      firstDate: currentDate,
       lastDate: DateTime(2101),
     );
 

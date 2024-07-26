@@ -1,28 +1,29 @@
 part of 'questions_bloc.dart';
 
 enum QuestionStatus {
-  intial,
-  error,
+  initial,
   loading,
   fetchQuestion,
+  error,
   answerQuestion,
-  storeAnswer,
 }
 
 @freezed
 class QuestionsState with _$QuestionsState {
-  factory QuestionsState({
-    required final List<QuestionModel> questions,
-    required final QuestionStatus questionStatus,
-    required final Map<int, int?> userAnswers,
-    required final Map<int, String?> shownSolutions,
+  const factory QuestionsState({
+    required List<QuestionModel> questions,
+    required Map<int, int?>
+        userAnswers, // Map of question index to selected option index
+    required Map<int, List<String?>>
+        shownSolutions, // Map of question index to shown solutions
+    required QuestionStatus questionStatus,
   }) = _QuestionsState;
 
-  factory QuestionsState.initial() => QuestionsState(
+  factory QuestionsState.initial() => const QuestionsState(
         questions: [],
         userAnswers: {},
         shownSolutions: {},
-        questionStatus: QuestionStatus.intial,
+        questionStatus: QuestionStatus.initial,
       );
 
   factory QuestionsState.fromJson(Map<String, dynamic> json) =>

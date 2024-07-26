@@ -114,6 +114,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           ),
         );
       }
+
+      if (event.username == 'Admin') {
+        emit(state.copyWith(loggedUser: UserLogged.admin));
+      }
     } on FirebaseFirestore catch (e) {
       log('Error to Login: $e');
       emit(

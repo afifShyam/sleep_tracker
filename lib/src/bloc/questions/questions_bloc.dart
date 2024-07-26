@@ -18,59 +18,55 @@ class QuestionsBloc extends Bloc<QuestionsEvent, QuestionsState> {
     on<ShowSolution>(_onShowSolution);
   }
 
-  Future<void> _getQuestions(GetQuestions event, Emitter emit) async {
+  Future<void> _getQuestions(
+      GetQuestions event, Emitter<QuestionsState> emit) async {
     try {
-      final question = await QuestionFirestore().getQuestions();
+      final questions =
+          await QuestionFirestore().getQuestions(event.categoryId);
 
-      log('ada ko: $question');
+      log('Questions: $questions');
       emit(state.copyWith(
-        questions: question,
+        questions: questions,
         questionStatus: QuestionStatus.fetchQuestion,
       ));
-      // List<String> listQuestion = [];
-
-      // for (var i = 0; i < event.numQuestion; i++) {
-      //   final question = await FirebaseFirestore.instance
-      //       .collection('question')
-      //       .doc('question $i')
-      //       .get();
-      //   if (question.exists) {
-      //     listQuestion.add(question.get('questions'));
-      //   }
-      // }
-      // emit(state.copyWith(
-      //   question: listQuestion,
-      //   questionStatus: QuestionStatus.fetchQuestion,
-      // ));
     } catch (e) {
       log(e.toString());
       emit(state.copyWith(questionStatus: QuestionStatus.error));
     }
   }
 
-  void _resetStatus(ResetStatus event, Emitter emit) =>
-      emit(state.copyWith(questionStatus: QuestionStatus.intial));
+  void _resetStatus(ResetStatus event, Emitter<QuestionsState> emit) =>
+      emit(state.copyWith(questionStatus: QuestionStatus.initial));
 
   void _onAnswerQuestion(AnswerQuestion event, Emitter<QuestionsState> emit) {
     final selectedOptionIndex = event.selectedOptionIndex;
-    final question = state.questions[event.questionIndex];
-    final solution = question.solutions[selectedOptionIndex];
+    final questionIndex = event.questionIndex;
+
+    // Check if questionIndex is within the valid range
+    if (questionIndex < 0 || questionIndex >= state.questions.length) {
+      return;
+    }
+
+    final question = state.questions[questionIndex];
+
+    // Check if selectedOptionIndex is within the valid range
+    if (selectedOptionIndex < 0 ||
+        selectedOptionIndex >= question.answerType.length) {
+      return;
+    }
 
     final updatedAnswers = Map<int, int?>.from(state.userAnswers)
-      ..[event.questionIndex] = selectedOptionIndex;
-    final updatedSolutions = Map<int, String?>.from(state.shownSolutions)
-      ..[event.questionIndex] = solution;
+      ..[questionIndex] = selectedOptionIndex;
 
     emit(state.copyWith(
       questionStatus: QuestionStatus.answerQuestion,
       userAnswers: updatedAnswers,
-      shownSolutions: updatedSolutions,
     ));
   }
 
   void _onShowSolution(ShowSolution event, Emitter<QuestionsState> emit) {
-    final updatedSolutions = Map<int, String?>.from(state.shownSolutions)
-      ..[event.questionIndex] = event.solution;
+    final updatedSolutions = Map<int, List<String?>>.from(state.shownSolutions)
+      ..[event.questionIndex] = event.solutions;
     emit(state.copyWith(
       shownSolutions: updatedSolutions,
     ));

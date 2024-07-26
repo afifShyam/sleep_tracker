@@ -78,8 +78,62 @@ class InfoPage extends StatelessWidget {
               ),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    context.read<QuestionsBloc>().add(const GetQuestions(15));
+                  onPressed: () async {
+                    await showAdaptiveDialog(
+                        context: context,
+                        builder: (_) => Dialog(
+                              insetPadding: EdgeInsets.zero,
+                              child: SizedBox(
+                                height: 300,
+                                width: 200,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Select Question Option',
+                                        style: TextStyleST.textStyle.title),
+                                    SizedBox(height: 20.h),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          context
+                                              .read<QuestionsBloc>()
+                                              .add(const GetQuestions('op'));
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop();
+                                        },
+                                        child: Text('10 - 25 Years',
+                                            style: TextStyleST
+                                                .textStyle.cardButton)),
+                                    SizedBox(height: 20.h),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          context.read<QuestionsBloc>().add(
+                                              const GetQuestions('dejj1bw'));
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop();
+                                        },
+                                        child: Text('26 - 40 Years',
+                                            style: TextStyleST
+                                                .textStyle.cardButton)),
+                                    SizedBox(height: 20.h),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          context
+                                              .read<QuestionsBloc>()
+                                              .add(const GetQuestions('wan'));
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop();
+                                        },
+                                        child: Text('41 and Above',
+                                            style: TextStyleST
+                                                .textStyle.cardButton)),
+                                  ],
+                                ),
+                              ),
+                            ));
+                    // context.read<QuestionsBloc>().add(const GetQuestions(15));
                   },
                   child: Text(
                     'Take Survey',
