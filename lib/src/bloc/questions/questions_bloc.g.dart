@@ -8,16 +8,35 @@ part of 'questions_bloc.dart';
 
 _$QuestionsStateImpl _$$QuestionsStateImplFromJson(Map<String, dynamic> json) =>
     _$QuestionsStateImpl(
-      questions: (json['questions'] as List<dynamic>)
-          .map((e) => QuestionModel.fromJson(e as Map<String, dynamic>))
+      categoryQuestions:
+          (json['categoryQuestions'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(
+            k,
+            (e as List<dynamic>)
+                .map((e) => QuestionModel.fromJson(e as Map<String, dynamic>))
+                .toList()),
+      ),
+      categoryUserAnswers:
+          (json['categoryUserAnswers'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(
+            k,
+            (e as Map<String, dynamic>).map(
+              (k, e) => MapEntry(int.parse(k), (e as num?)?.toInt()),
+            )),
+      ),
+      categoryShownSolutions:
+          (json['categoryShownSolutions'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(
+            k,
+            (e as Map<String, dynamic>).map(
+              (k, e) => MapEntry(int.parse(k),
+                  (e as List<dynamic>).map((e) => e as String?).toList()),
+            )),
+      ),
+      categoryList: (json['categoryList'] as List<dynamic>)
+          .map((e) => e as String)
           .toList(),
-      userAnswers: (json['userAnswers'] as Map<String, dynamic>).map(
-        (k, e) => MapEntry(int.parse(k), (e as num?)?.toInt()),
-      ),
-      shownSolutions: (json['shownSolutions'] as Map<String, dynamic>).map(
-        (k, e) => MapEntry(int.parse(k),
-            (e as List<dynamic>).map((e) => e as String?).toList()),
-      ),
+      categoryId: json['categoryId'] as String,
       questionStatus:
           $enumDecode(_$QuestionStatusEnumMap, json['questionStatus']),
     );
@@ -25,11 +44,13 @@ _$QuestionsStateImpl _$$QuestionsStateImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$QuestionsStateImplToJson(
         _$QuestionsStateImpl instance) =>
     <String, dynamic>{
-      'questions': instance.questions,
-      'userAnswers':
-          instance.userAnswers.map((k, e) => MapEntry(k.toString(), e)),
-      'shownSolutions':
-          instance.shownSolutions.map((k, e) => MapEntry(k.toString(), e)),
+      'categoryQuestions': instance.categoryQuestions,
+      'categoryUserAnswers': instance.categoryUserAnswers.map(
+          (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
+      'categoryShownSolutions': instance.categoryShownSolutions.map(
+          (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
+      'categoryList': instance.categoryList,
+      'categoryId': instance.categoryId,
       'questionStatus': _$QuestionStatusEnumMap[instance.questionStatus]!,
     };
 

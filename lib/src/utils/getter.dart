@@ -112,6 +112,18 @@ class QuestionFirestore {
 
     return questions;
   }
+
+  Future<List<String>> fetchCategoryIds() async {
+    try {
+      QuerySnapshot querySnapshot = await _db.collection('categories').get();
+      List<String> documentIds =
+          querySnapshot.docs.map((doc) => doc.id).toList();
+
+      return documentIds;
+    } catch (e) {
+      throw Exception('Failed to fetch category IDs: $e');
+    }
+  }
 }
 
 class NotificationService {
@@ -159,6 +171,8 @@ class NotificationService {
         final id = x.payload ?? '';
         final map = jsonDecode(id);
 
+        log('action buttong: ${map}');
+
         if (map['type'] == 'bedtime') {
           final now = DateTime.now();
           await FirebaseFirestore.instance
@@ -204,6 +218,10 @@ class NotificationService {
       category: AndroidNotificationCategory.alarm,
       audioAttributesUsage: AudioAttributesUsage.alarm,
       sound: RawResourceAndroidNotificationSound('alarm_sound'),
+      actions: [
+        AndroidNotificationAction('snooze', 'Snooze',
+            inputs: [AndroidNotificationActionInput()])
+      ],
     );
 
     const DarwinNotificationDetails iosPlatformChannelSpecifics =

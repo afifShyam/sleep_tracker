@@ -66,7 +66,10 @@ class QuestionRoute implements ManagerRouter {
     Widget page = const PageNotFound();
     switch (settings.name!) {
       case quesitonPage:
-        page = QuestionPage();
+        dynamic args = settings.arguments;
+        page = QuestionPage(
+          categoryId: args['categoryId'],
+        );
         break;
       case infoPage:
         page = const InfoPage();

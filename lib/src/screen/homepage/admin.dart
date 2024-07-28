@@ -98,6 +98,10 @@ class _AdminQuestionState extends State<AdminQuestion> {
       final firestore = FirebaseFirestore.instance;
 
       for (var category in _categories) {
+        await firestore
+            .collection('categories')
+            .doc(category['categoryName'].text)
+            .set({'categoryName': category['categoryName'].text});
         for (var question in category['questions']) {
           await firestore
               .collection('categories')

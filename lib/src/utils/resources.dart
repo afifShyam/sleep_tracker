@@ -169,6 +169,7 @@ class STColor {
   static const Color gray70 = Color(0xFFC4C4C4);
   static const Color slateGray = Color(0xFF8F919F);
   static const Color transparent = Color(0x00000000);
+  static const Color green = Color.fromARGB(255, 1, 207, 83);
 
   // Add new colors here
   static const Color darkBlueBackground = Color(0xFF0D253F);

@@ -6,23 +6,27 @@ enum QuestionStatus {
   fetchQuestion,
   error,
   answerQuestion,
+  getCategoryId,
+  storeCategoryId,
 }
 
 @freezed
 class QuestionsState with _$QuestionsState {
   const factory QuestionsState({
-    required List<QuestionModel> questions,
-    required Map<int, int?>
-        userAnswers, // Map of question index to selected option index
-    required Map<int, List<String?>>
-        shownSolutions, // Map of question index to shown solutions
+    required Map<String, List<QuestionModel>> categoryQuestions,
+    required Map<String, Map<int, int?>> categoryUserAnswers,
+    required Map<String, Map<int, List<String?>>> categoryShownSolutions,
+    required List<String> categoryList,
+    required String categoryId,
     required QuestionStatus questionStatus,
   }) = _QuestionsState;
 
   factory QuestionsState.initial() => const QuestionsState(
-        questions: [],
-        userAnswers: {},
-        shownSolutions: {},
+        categoryQuestions: {},
+        categoryUserAnswers: {},
+        categoryShownSolutions: {},
+        categoryList: [],
+        categoryId: '',
         questionStatus: QuestionStatus.initial,
       );
 

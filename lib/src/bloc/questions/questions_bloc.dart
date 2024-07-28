@@ -16,17 +16,21 @@ class QuestionsBloc extends Bloc<QuestionsEvent, QuestionsState> {
     on<ResetStatus>(_resetStatus);
     on<AnswerQuestion>(_onAnswerQuestion);
     on<ShowSolution>(_onShowSolution);
+    on<GetCategoryList>(_getCategoryList);
+    on<GetCategoryId>(_getCategoryId);
   }
 
-  Future<void> _getQuestions(
-      GetQuestions event, Emitter<QuestionsState> emit) async {
+  Future<void> _getQuestions(GetQuestions event, Emitter emit) async {
+    emit(state.copyWith(questionStatus: QuestionStatus.loading));
     try {
       final questions =
           await QuestionFirestore().getQuestions(event.categoryId);
 
-      log('Questions: $questions');
       emit(state.copyWith(
-        questions: questions,
+        categoryQuestions: {
+          ...state.categoryQuestions,
+          event.categoryId: questions,
+        },
         questionStatus: QuestionStatus.fetchQuestion,
       ));
     } catch (e) {
@@ -35,40 +39,62 @@ class QuestionsBloc extends Bloc<QuestionsEvent, QuestionsState> {
     }
   }
 
-  void _resetStatus(ResetStatus event, Emitter<QuestionsState> emit) =>
+  void _resetStatus(ResetStatus event, Emitter emit) =>
       emit(state.copyWith(questionStatus: QuestionStatus.initial));
 
   void _onAnswerQuestion(AnswerQuestion event, Emitter<QuestionsState> emit) {
+    final categoryId = event.categoryId;
     final selectedOptionIndex = event.selectedOptionIndex;
     final questionIndex = event.questionIndex;
 
     // Check if questionIndex is within the valid range
-    if (questionIndex < 0 || questionIndex >= state.questions.length) {
+    if (questionIndex < 0 ||
+        questionIndex >= state.categoryQuestions[categoryId]!.length) {
       return;
     }
 
-    final question = state.questions[questionIndex];
-
-    // Check if selectedOptionIndex is within the valid range
-    if (selectedOptionIndex < 0 ||
-        selectedOptionIndex >= question.answerType.length) {
-      return;
-    }
-
-    final updatedAnswers = Map<int, int?>.from(state.userAnswers)
-      ..[questionIndex] = selectedOptionIndex;
+    final updatedUserAnswers = {
+      ...state.categoryUserAnswers[categoryId] ?? {},
+      questionIndex: selectedOptionIndex,
+    };
 
     emit(state.copyWith(
       questionStatus: QuestionStatus.answerQuestion,
-      userAnswers: updatedAnswers,
+      categoryUserAnswers: {
+        ...state.categoryUserAnswers,
+        categoryId: updatedUserAnswers,
+      },
     ));
   }
 
   void _onShowSolution(ShowSolution event, Emitter<QuestionsState> emit) {
-    final updatedSolutions = Map<int, List<String?>>.from(state.shownSolutions)
-      ..[event.questionIndex] = event.solutions;
+    final categoryId = event.categoryId;
+    final updatedSolutions = {
+      ...state.categoryShownSolutions[categoryId] ?? {},
+      event.questionIndex: event.solution,
+    };
+
     emit(state.copyWith(
-      shownSolutions: updatedSolutions,
+      categoryShownSolutions: {
+        ...state.categoryShownSolutions,
+        categoryId: updatedSolutions,
+      },
     ));
   }
+
+  Future<void> _getCategoryList(GetCategoryList event, Emitter emit) async {
+    try {
+      final categoryList = await QuestionFirestore().fetchCategoryIds();
+      emit(state.copyWith(
+          categoryList: categoryList,
+          questionStatus: QuestionStatus.storeCategoryId));
+    } catch (e) {
+      log('error on GetCategoryList: $e');
+      throw 'error on GetCategoryList: $e';
+    }
+  }
+
+  void _getCategoryId(GetCategoryId event, Emitter emit) => emit(state.copyWith(
+      categoryId: event.categoryId,
+      questionStatus: QuestionStatus.getCategoryId));
 }

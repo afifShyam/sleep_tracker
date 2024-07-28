@@ -20,11 +20,14 @@ QuestionsState _$QuestionsStateFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$QuestionsState {
-  List<QuestionModel> get questions => throw _privateConstructorUsedError;
-  Map<int, int?> get userAnswers =>
-      throw _privateConstructorUsedError; // Map of question index to selected option index
-  Map<int, List<String?>> get shownSolutions =>
-      throw _privateConstructorUsedError; // Map of question index to shown solutions
+  Map<String, List<QuestionModel>> get categoryQuestions =>
+      throw _privateConstructorUsedError;
+  Map<String, Map<int, int?>> get categoryUserAnswers =>
+      throw _privateConstructorUsedError;
+  Map<String, Map<int, List<String?>>> get categoryShownSolutions =>
+      throw _privateConstructorUsedError;
+  List<String> get categoryList => throw _privateConstructorUsedError;
+  String get categoryId => throw _privateConstructorUsedError;
   QuestionStatus get questionStatus => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,9 +43,11 @@ abstract class $QuestionsStateCopyWith<$Res> {
       _$QuestionsStateCopyWithImpl<$Res, QuestionsState>;
   @useResult
   $Res call(
-      {List<QuestionModel> questions,
-      Map<int, int?> userAnswers,
-      Map<int, List<String?>> shownSolutions,
+      {Map<String, List<QuestionModel>> categoryQuestions,
+      Map<String, Map<int, int?>> categoryUserAnswers,
+      Map<String, Map<int, List<String?>>> categoryShownSolutions,
+      List<String> categoryList,
+      String categoryId,
       QuestionStatus questionStatus});
 }
 
@@ -59,24 +64,34 @@ class _$QuestionsStateCopyWithImpl<$Res, $Val extends QuestionsState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? questions = null,
-    Object? userAnswers = null,
-    Object? shownSolutions = null,
+    Object? categoryQuestions = null,
+    Object? categoryUserAnswers = null,
+    Object? categoryShownSolutions = null,
+    Object? categoryList = null,
+    Object? categoryId = null,
     Object? questionStatus = null,
   }) {
     return _then(_value.copyWith(
-      questions: null == questions
-          ? _value.questions
-          : questions // ignore: cast_nullable_to_non_nullable
-              as List<QuestionModel>,
-      userAnswers: null == userAnswers
-          ? _value.userAnswers
-          : userAnswers // ignore: cast_nullable_to_non_nullable
-              as Map<int, int?>,
-      shownSolutions: null == shownSolutions
-          ? _value.shownSolutions
-          : shownSolutions // ignore: cast_nullable_to_non_nullable
-              as Map<int, List<String?>>,
+      categoryQuestions: null == categoryQuestions
+          ? _value.categoryQuestions
+          : categoryQuestions // ignore: cast_nullable_to_non_nullable
+              as Map<String, List<QuestionModel>>,
+      categoryUserAnswers: null == categoryUserAnswers
+          ? _value.categoryUserAnswers
+          : categoryUserAnswers // ignore: cast_nullable_to_non_nullable
+              as Map<String, Map<int, int?>>,
+      categoryShownSolutions: null == categoryShownSolutions
+          ? _value.categoryShownSolutions
+          : categoryShownSolutions // ignore: cast_nullable_to_non_nullable
+              as Map<String, Map<int, List<String?>>>,
+      categoryList: null == categoryList
+          ? _value.categoryList
+          : categoryList // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      categoryId: null == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String,
       questionStatus: null == questionStatus
           ? _value.questionStatus
           : questionStatus // ignore: cast_nullable_to_non_nullable
@@ -94,9 +109,11 @@ abstract class _$$QuestionsStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<QuestionModel> questions,
-      Map<int, int?> userAnswers,
-      Map<int, List<String?>> shownSolutions,
+      {Map<String, List<QuestionModel>> categoryQuestions,
+      Map<String, Map<int, int?>> categoryUserAnswers,
+      Map<String, Map<int, List<String?>>> categoryShownSolutions,
+      List<String> categoryList,
+      String categoryId,
       QuestionStatus questionStatus});
 }
 
@@ -111,24 +128,34 @@ class __$$QuestionsStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? questions = null,
-    Object? userAnswers = null,
-    Object? shownSolutions = null,
+    Object? categoryQuestions = null,
+    Object? categoryUserAnswers = null,
+    Object? categoryShownSolutions = null,
+    Object? categoryList = null,
+    Object? categoryId = null,
     Object? questionStatus = null,
   }) {
     return _then(_$QuestionsStateImpl(
-      questions: null == questions
-          ? _value._questions
-          : questions // ignore: cast_nullable_to_non_nullable
-              as List<QuestionModel>,
-      userAnswers: null == userAnswers
-          ? _value._userAnswers
-          : userAnswers // ignore: cast_nullable_to_non_nullable
-              as Map<int, int?>,
-      shownSolutions: null == shownSolutions
-          ? _value._shownSolutions
-          : shownSolutions // ignore: cast_nullable_to_non_nullable
-              as Map<int, List<String?>>,
+      categoryQuestions: null == categoryQuestions
+          ? _value._categoryQuestions
+          : categoryQuestions // ignore: cast_nullable_to_non_nullable
+              as Map<String, List<QuestionModel>>,
+      categoryUserAnswers: null == categoryUserAnswers
+          ? _value._categoryUserAnswers
+          : categoryUserAnswers // ignore: cast_nullable_to_non_nullable
+              as Map<String, Map<int, int?>>,
+      categoryShownSolutions: null == categoryShownSolutions
+          ? _value._categoryShownSolutions
+          : categoryShownSolutions // ignore: cast_nullable_to_non_nullable
+              as Map<String, Map<int, List<String?>>>,
+      categoryList: null == categoryList
+          ? _value._categoryList
+          : categoryList // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      categoryId: null == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String,
       questionStatus: null == questionStatus
           ? _value.questionStatus
           : questionStatus // ignore: cast_nullable_to_non_nullable
@@ -141,50 +168,64 @@ class __$$QuestionsStateImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$QuestionsStateImpl implements _QuestionsState {
   const _$QuestionsStateImpl(
-      {required final List<QuestionModel> questions,
-      required final Map<int, int?> userAnswers,
-      required final Map<int, List<String?>> shownSolutions,
+      {required final Map<String, List<QuestionModel>> categoryQuestions,
+      required final Map<String, Map<int, int?>> categoryUserAnswers,
+      required final Map<String, Map<int, List<String?>>>
+          categoryShownSolutions,
+      required final List<String> categoryList,
+      required this.categoryId,
       required this.questionStatus})
-      : _questions = questions,
-        _userAnswers = userAnswers,
-        _shownSolutions = shownSolutions;
+      : _categoryQuestions = categoryQuestions,
+        _categoryUserAnswers = categoryUserAnswers,
+        _categoryShownSolutions = categoryShownSolutions,
+        _categoryList = categoryList;
 
   factory _$QuestionsStateImpl.fromJson(Map<String, dynamic> json) =>
       _$$QuestionsStateImplFromJson(json);
 
-  final List<QuestionModel> _questions;
+  final Map<String, List<QuestionModel>> _categoryQuestions;
   @override
-  List<QuestionModel> get questions {
-    if (_questions is EqualUnmodifiableListView) return _questions;
+  Map<String, List<QuestionModel>> get categoryQuestions {
+    if (_categoryQuestions is EqualUnmodifiableMapView)
+      return _categoryQuestions;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_questions);
+    return EqualUnmodifiableMapView(_categoryQuestions);
   }
 
-  final Map<int, int?> _userAnswers;
+  final Map<String, Map<int, int?>> _categoryUserAnswers;
   @override
-  Map<int, int?> get userAnswers {
-    if (_userAnswers is EqualUnmodifiableMapView) return _userAnswers;
+  Map<String, Map<int, int?>> get categoryUserAnswers {
+    if (_categoryUserAnswers is EqualUnmodifiableMapView)
+      return _categoryUserAnswers;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_userAnswers);
+    return EqualUnmodifiableMapView(_categoryUserAnswers);
   }
 
-// Map of question index to selected option index
-  final Map<int, List<String?>> _shownSolutions;
-// Map of question index to selected option index
+  final Map<String, Map<int, List<String?>>> _categoryShownSolutions;
   @override
-  Map<int, List<String?>> get shownSolutions {
-    if (_shownSolutions is EqualUnmodifiableMapView) return _shownSolutions;
+  Map<String, Map<int, List<String?>>> get categoryShownSolutions {
+    if (_categoryShownSolutions is EqualUnmodifiableMapView)
+      return _categoryShownSolutions;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_shownSolutions);
+    return EqualUnmodifiableMapView(_categoryShownSolutions);
   }
 
-// Map of question index to shown solutions
+  final List<String> _categoryList;
+  @override
+  List<String> get categoryList {
+    if (_categoryList is EqualUnmodifiableListView) return _categoryList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_categoryList);
+  }
+
+  @override
+  final String categoryId;
   @override
   final QuestionStatus questionStatus;
 
   @override
   String toString() {
-    return 'QuestionsState(questions: $questions, userAnswers: $userAnswers, shownSolutions: $shownSolutions, questionStatus: $questionStatus)';
+    return 'QuestionsState(categoryQuestions: $categoryQuestions, categoryUserAnswers: $categoryUserAnswers, categoryShownSolutions: $categoryShownSolutions, categoryList: $categoryList, categoryId: $categoryId, questionStatus: $questionStatus)';
   }
 
   @override
@@ -193,11 +234,15 @@ class _$QuestionsStateImpl implements _QuestionsState {
         (other.runtimeType == runtimeType &&
             other is _$QuestionsStateImpl &&
             const DeepCollectionEquality()
-                .equals(other._questions, _questions) &&
+                .equals(other._categoryQuestions, _categoryQuestions) &&
             const DeepCollectionEquality()
-                .equals(other._userAnswers, _userAnswers) &&
+                .equals(other._categoryUserAnswers, _categoryUserAnswers) &&
+            const DeepCollectionEquality().equals(
+                other._categoryShownSolutions, _categoryShownSolutions) &&
             const DeepCollectionEquality()
-                .equals(other._shownSolutions, _shownSolutions) &&
+                .equals(other._categoryList, _categoryList) &&
+            (identical(other.categoryId, categoryId) ||
+                other.categoryId == categoryId) &&
             (identical(other.questionStatus, questionStatus) ||
                 other.questionStatus == questionStatus));
   }
@@ -206,9 +251,11 @@ class _$QuestionsStateImpl implements _QuestionsState {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      const DeepCollectionEquality().hash(_questions),
-      const DeepCollectionEquality().hash(_userAnswers),
-      const DeepCollectionEquality().hash(_shownSolutions),
+      const DeepCollectionEquality().hash(_categoryQuestions),
+      const DeepCollectionEquality().hash(_categoryUserAnswers),
+      const DeepCollectionEquality().hash(_categoryShownSolutions),
+      const DeepCollectionEquality().hash(_categoryList),
+      categoryId,
       questionStatus);
 
   @JsonKey(ignore: true)
@@ -228,21 +275,28 @@ class _$QuestionsStateImpl implements _QuestionsState {
 
 abstract class _QuestionsState implements QuestionsState {
   const factory _QuestionsState(
-      {required final List<QuestionModel> questions,
-      required final Map<int, int?> userAnswers,
-      required final Map<int, List<String?>> shownSolutions,
+      {required final Map<String, List<QuestionModel>> categoryQuestions,
+      required final Map<String, Map<int, int?>> categoryUserAnswers,
+      required final Map<String, Map<int, List<String?>>>
+          categoryShownSolutions,
+      required final List<String> categoryList,
+      required final String categoryId,
       required final QuestionStatus questionStatus}) = _$QuestionsStateImpl;
 
   factory _QuestionsState.fromJson(Map<String, dynamic> json) =
       _$QuestionsStateImpl.fromJson;
 
   @override
-  List<QuestionModel> get questions;
+  Map<String, List<QuestionModel>> get categoryQuestions;
   @override
-  Map<int, int?> get userAnswers;
-  @override // Map of question index to selected option index
-  Map<int, List<String?>> get shownSolutions;
-  @override // Map of question index to shown solutions
+  Map<String, Map<int, int?>> get categoryUserAnswers;
+  @override
+  Map<String, Map<int, List<String?>>> get categoryShownSolutions;
+  @override
+  List<String> get categoryList;
+  @override
+  String get categoryId;
+  @override
   QuestionStatus get questionStatus;
   @override
   @JsonKey(ignore: true)
@@ -256,28 +310,42 @@ mixin _$QuestionsEvent {
   TResult when<TResult extends Object?>({
     required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
-    required TResult Function(int questionIndex, int selectedOptionIndex)
+    required TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, List<String?> solutions)
+    required TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)
         showSolution,
+    required TResult Function() getCategoryList,
+    required TResult Function(String categoryId) getCategoryId,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
-    TResult? Function(int questionIndex, int selectedOptionIndex)?
+    TResult? Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult? Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult? Function()? getCategoryList,
+    TResult? Function(String categoryId)? getCategoryId,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
-    TResult Function(int questionIndex, int selectedOptionIndex)?
+    TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult Function()? getCategoryList,
+    TResult Function(String categoryId)? getCategoryId,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -287,6 +355,8 @@ mixin _$QuestionsEvent {
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
+    required TResult Function(GetCategoryList value) getCategoryList,
+    required TResult Function(GetCategoryId value) getCategoryId,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -295,6 +365,8 @@ mixin _$QuestionsEvent {
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
+    TResult? Function(GetCategoryList value)? getCategoryList,
+    TResult? Function(GetCategoryId value)? getCategoryId,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -303,6 +375,8 @@ mixin _$QuestionsEvent {
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
+    TResult Function(GetCategoryList value)? getCategoryList,
+    TResult Function(GetCategoryId value)? getCategoryId,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -393,10 +467,14 @@ class _$GetQuestionsImpl implements GetQuestions {
   TResult when<TResult extends Object?>({
     required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
-    required TResult Function(int questionIndex, int selectedOptionIndex)
+    required TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, List<String?> solutions)
+    required TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)
         showSolution,
+    required TResult Function() getCategoryList,
+    required TResult Function(String categoryId) getCategoryId,
   }) {
     return getQuestions(categoryId);
   }
@@ -406,9 +484,14 @@ class _$GetQuestionsImpl implements GetQuestions {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
-    TResult? Function(int questionIndex, int selectedOptionIndex)?
+    TResult? Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult? Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult? Function()? getCategoryList,
+    TResult? Function(String categoryId)? getCategoryId,
   }) {
     return getQuestions?.call(categoryId);
   }
@@ -418,9 +501,14 @@ class _$GetQuestionsImpl implements GetQuestions {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
-    TResult Function(int questionIndex, int selectedOptionIndex)?
+    TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult Function()? getCategoryList,
+    TResult Function(String categoryId)? getCategoryId,
     required TResult orElse(),
   }) {
     if (getQuestions != null) {
@@ -436,6 +524,8 @@ class _$GetQuestionsImpl implements GetQuestions {
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
+    required TResult Function(GetCategoryList value) getCategoryList,
+    required TResult Function(GetCategoryId value) getCategoryId,
   }) {
     return getQuestions(this);
   }
@@ -447,6 +537,8 @@ class _$GetQuestionsImpl implements GetQuestions {
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
+    TResult? Function(GetCategoryList value)? getCategoryList,
+    TResult? Function(GetCategoryId value)? getCategoryId,
   }) {
     return getQuestions?.call(this);
   }
@@ -458,6 +550,8 @@ class _$GetQuestionsImpl implements GetQuestions {
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
+    TResult Function(GetCategoryList value)? getCategoryList,
+    TResult Function(GetCategoryId value)? getCategoryId,
     required TResult orElse(),
   }) {
     if (getQuestions != null) {
@@ -516,10 +610,14 @@ class _$ResetStatusImpl implements ResetStatus {
   TResult when<TResult extends Object?>({
     required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
-    required TResult Function(int questionIndex, int selectedOptionIndex)
+    required TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, List<String?> solutions)
+    required TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)
         showSolution,
+    required TResult Function() getCategoryList,
+    required TResult Function(String categoryId) getCategoryId,
   }) {
     return resetStatus();
   }
@@ -529,9 +627,14 @@ class _$ResetStatusImpl implements ResetStatus {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
-    TResult? Function(int questionIndex, int selectedOptionIndex)?
+    TResult? Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult? Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult? Function()? getCategoryList,
+    TResult? Function(String categoryId)? getCategoryId,
   }) {
     return resetStatus?.call();
   }
@@ -541,9 +644,14 @@ class _$ResetStatusImpl implements ResetStatus {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
-    TResult Function(int questionIndex, int selectedOptionIndex)?
+    TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult Function()? getCategoryList,
+    TResult Function(String categoryId)? getCategoryId,
     required TResult orElse(),
   }) {
     if (resetStatus != null) {
@@ -559,6 +667,8 @@ class _$ResetStatusImpl implements ResetStatus {
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
+    required TResult Function(GetCategoryList value) getCategoryList,
+    required TResult Function(GetCategoryId value) getCategoryId,
   }) {
     return resetStatus(this);
   }
@@ -570,6 +680,8 @@ class _$ResetStatusImpl implements ResetStatus {
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
+    TResult? Function(GetCategoryList value)? getCategoryList,
+    TResult? Function(GetCategoryId value)? getCategoryId,
   }) {
     return resetStatus?.call(this);
   }
@@ -581,6 +693,8 @@ class _$ResetStatusImpl implements ResetStatus {
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
+    TResult Function(GetCategoryList value)? getCategoryList,
+    TResult Function(GetCategoryId value)? getCategoryId,
     required TResult orElse(),
   }) {
     if (resetStatus != null) {
@@ -600,7 +714,7 @@ abstract class _$$AnswerQuestionImplCopyWith<$Res> {
           $Res Function(_$AnswerQuestionImpl) then) =
       __$$AnswerQuestionImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int questionIndex, int selectedOptionIndex});
+  $Res call({String categoryId, int questionIndex, int selectedOptionIndex});
 }
 
 /// @nodoc
@@ -614,10 +728,15 @@ class __$$AnswerQuestionImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? categoryId = null,
     Object? questionIndex = null,
     Object? selectedOptionIndex = null,
   }) {
     return _then(_$AnswerQuestionImpl(
+      null == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String,
       null == questionIndex
           ? _value.questionIndex
           : questionIndex // ignore: cast_nullable_to_non_nullable
@@ -633,8 +752,11 @@ class __$$AnswerQuestionImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$AnswerQuestionImpl implements AnswerQuestion {
-  const _$AnswerQuestionImpl(this.questionIndex, this.selectedOptionIndex);
+  const _$AnswerQuestionImpl(
+      this.categoryId, this.questionIndex, this.selectedOptionIndex);
 
+  @override
+  final String categoryId;
   @override
   final int questionIndex;
   @override
@@ -642,7 +764,7 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
 
   @override
   String toString() {
-    return 'QuestionsEvent.answerQuestion(questionIndex: $questionIndex, selectedOptionIndex: $selectedOptionIndex)';
+    return 'QuestionsEvent.answerQuestion(categoryId: $categoryId, questionIndex: $questionIndex, selectedOptionIndex: $selectedOptionIndex)';
   }
 
   @override
@@ -650,6 +772,8 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AnswerQuestionImpl &&
+            (identical(other.categoryId, categoryId) ||
+                other.categoryId == categoryId) &&
             (identical(other.questionIndex, questionIndex) ||
                 other.questionIndex == questionIndex) &&
             (identical(other.selectedOptionIndex, selectedOptionIndex) ||
@@ -658,7 +782,7 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, questionIndex, selectedOptionIndex);
+      Object.hash(runtimeType, categoryId, questionIndex, selectedOptionIndex);
 
   @JsonKey(ignore: true)
   @override
@@ -672,12 +796,16 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
   TResult when<TResult extends Object?>({
     required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
-    required TResult Function(int questionIndex, int selectedOptionIndex)
+    required TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, List<String?> solutions)
+    required TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)
         showSolution,
+    required TResult Function() getCategoryList,
+    required TResult Function(String categoryId) getCategoryId,
   }) {
-    return answerQuestion(questionIndex, selectedOptionIndex);
+    return answerQuestion(categoryId, questionIndex, selectedOptionIndex);
   }
 
   @override
@@ -685,11 +813,16 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
-    TResult? Function(int questionIndex, int selectedOptionIndex)?
+    TResult? Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult? Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult? Function()? getCategoryList,
+    TResult? Function(String categoryId)? getCategoryId,
   }) {
-    return answerQuestion?.call(questionIndex, selectedOptionIndex);
+    return answerQuestion?.call(categoryId, questionIndex, selectedOptionIndex);
   }
 
   @override
@@ -697,13 +830,18 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
-    TResult Function(int questionIndex, int selectedOptionIndex)?
+    TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult Function()? getCategoryList,
+    TResult Function(String categoryId)? getCategoryId,
     required TResult orElse(),
   }) {
     if (answerQuestion != null) {
-      return answerQuestion(questionIndex, selectedOptionIndex);
+      return answerQuestion(categoryId, questionIndex, selectedOptionIndex);
     }
     return orElse();
   }
@@ -715,6 +853,8 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
+    required TResult Function(GetCategoryList value) getCategoryList,
+    required TResult Function(GetCategoryId value) getCategoryId,
   }) {
     return answerQuestion(this);
   }
@@ -726,6 +866,8 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
+    TResult? Function(GetCategoryList value)? getCategoryList,
+    TResult? Function(GetCategoryId value)? getCategoryId,
   }) {
     return answerQuestion?.call(this);
   }
@@ -737,6 +879,8 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
+    TResult Function(GetCategoryList value)? getCategoryList,
+    TResult Function(GetCategoryId value)? getCategoryId,
     required TResult orElse(),
   }) {
     if (answerQuestion != null) {
@@ -747,10 +891,10 @@ class _$AnswerQuestionImpl implements AnswerQuestion {
 }
 
 abstract class AnswerQuestion implements QuestionsEvent {
-  const factory AnswerQuestion(
-          final int questionIndex, final int selectedOptionIndex) =
-      _$AnswerQuestionImpl;
+  const factory AnswerQuestion(final String categoryId, final int questionIndex,
+      final int selectedOptionIndex) = _$AnswerQuestionImpl;
 
+  String get categoryId;
   int get questionIndex;
   int get selectedOptionIndex;
   @JsonKey(ignore: true)
@@ -764,7 +908,7 @@ abstract class _$$ShowSolutionImplCopyWith<$Res> {
           _$ShowSolutionImpl value, $Res Function(_$ShowSolutionImpl) then) =
       __$$ShowSolutionImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int questionIndex, List<String?> solutions});
+  $Res call({String categoryId, int questionIndex, List<String?> solution});
 }
 
 /// @nodoc
@@ -778,17 +922,22 @@ class __$$ShowSolutionImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? categoryId = null,
     Object? questionIndex = null,
-    Object? solutions = null,
+    Object? solution = null,
   }) {
     return _then(_$ShowSolutionImpl(
+      null == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String,
       null == questionIndex
           ? _value.questionIndex
           : questionIndex // ignore: cast_nullable_to_non_nullable
               as int,
-      null == solutions
-          ? _value._solutions
-          : solutions // ignore: cast_nullable_to_non_nullable
+      null == solution
+          ? _value._solution
+          : solution // ignore: cast_nullable_to_non_nullable
               as List<String?>,
     ));
   }
@@ -797,22 +946,25 @@ class __$$ShowSolutionImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ShowSolutionImpl implements ShowSolution {
-  const _$ShowSolutionImpl(this.questionIndex, final List<String?> solutions)
-      : _solutions = solutions;
+  const _$ShowSolutionImpl(
+      this.categoryId, this.questionIndex, final List<String?> solution)
+      : _solution = solution;
 
   @override
-  final int questionIndex;
-  final List<String?> _solutions;
+  final String categoryId;
   @override
-  List<String?> get solutions {
-    if (_solutions is EqualUnmodifiableListView) return _solutions;
+  final int questionIndex;
+  final List<String?> _solution;
+  @override
+  List<String?> get solution {
+    if (_solution is EqualUnmodifiableListView) return _solution;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_solutions);
+    return EqualUnmodifiableListView(_solution);
   }
 
   @override
   String toString() {
-    return 'QuestionsEvent.showSolution(questionIndex: $questionIndex, solutions: $solutions)';
+    return 'QuestionsEvent.showSolution(categoryId: $categoryId, questionIndex: $questionIndex, solution: $solution)';
   }
 
   @override
@@ -820,15 +972,16 @@ class _$ShowSolutionImpl implements ShowSolution {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ShowSolutionImpl &&
+            (identical(other.categoryId, categoryId) ||
+                other.categoryId == categoryId) &&
             (identical(other.questionIndex, questionIndex) ||
                 other.questionIndex == questionIndex) &&
-            const DeepCollectionEquality()
-                .equals(other._solutions, _solutions));
+            const DeepCollectionEquality().equals(other._solution, _solution));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, questionIndex,
-      const DeepCollectionEquality().hash(_solutions));
+  int get hashCode => Object.hash(runtimeType, categoryId, questionIndex,
+      const DeepCollectionEquality().hash(_solution));
 
   @JsonKey(ignore: true)
   @override
@@ -841,12 +994,16 @@ class _$ShowSolutionImpl implements ShowSolution {
   TResult when<TResult extends Object?>({
     required TResult Function(String categoryId) getQuestions,
     required TResult Function() resetStatus,
-    required TResult Function(int questionIndex, int selectedOptionIndex)
+    required TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)
         answerQuestion,
-    required TResult Function(int questionIndex, List<String?> solutions)
+    required TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)
         showSolution,
+    required TResult Function() getCategoryList,
+    required TResult Function(String categoryId) getCategoryId,
   }) {
-    return showSolution(questionIndex, solutions);
+    return showSolution(categoryId, questionIndex, solution);
   }
 
   @override
@@ -854,11 +1011,16 @@ class _$ShowSolutionImpl implements ShowSolution {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String categoryId)? getQuestions,
     TResult? Function()? resetStatus,
-    TResult? Function(int questionIndex, int selectedOptionIndex)?
+    TResult? Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult? Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult? Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult? Function()? getCategoryList,
+    TResult? Function(String categoryId)? getCategoryId,
   }) {
-    return showSolution?.call(questionIndex, solutions);
+    return showSolution?.call(categoryId, questionIndex, solution);
   }
 
   @override
@@ -866,13 +1028,18 @@ class _$ShowSolutionImpl implements ShowSolution {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String categoryId)? getQuestions,
     TResult Function()? resetStatus,
-    TResult Function(int questionIndex, int selectedOptionIndex)?
+    TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
         answerQuestion,
-    TResult Function(int questionIndex, List<String?> solutions)? showSolution,
+    TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult Function()? getCategoryList,
+    TResult Function(String categoryId)? getCategoryId,
     required TResult orElse(),
   }) {
     if (showSolution != null) {
-      return showSolution(questionIndex, solutions);
+      return showSolution(categoryId, questionIndex, solution);
     }
     return orElse();
   }
@@ -884,6 +1051,8 @@ class _$ShowSolutionImpl implements ShowSolution {
     required TResult Function(ResetStatus value) resetStatus,
     required TResult Function(AnswerQuestion value) answerQuestion,
     required TResult Function(ShowSolution value) showSolution,
+    required TResult Function(GetCategoryList value) getCategoryList,
+    required TResult Function(GetCategoryId value) getCategoryId,
   }) {
     return showSolution(this);
   }
@@ -895,6 +1064,8 @@ class _$ShowSolutionImpl implements ShowSolution {
     TResult? Function(ResetStatus value)? resetStatus,
     TResult? Function(AnswerQuestion value)? answerQuestion,
     TResult? Function(ShowSolution value)? showSolution,
+    TResult? Function(GetCategoryList value)? getCategoryList,
+    TResult? Function(GetCategoryId value)? getCategoryId,
   }) {
     return showSolution?.call(this);
   }
@@ -906,6 +1077,8 @@ class _$ShowSolutionImpl implements ShowSolution {
     TResult Function(ResetStatus value)? resetStatus,
     TResult Function(AnswerQuestion value)? answerQuestion,
     TResult Function(ShowSolution value)? showSolution,
+    TResult Function(GetCategoryList value)? getCategoryList,
+    TResult Function(GetCategoryId value)? getCategoryId,
     required TResult orElse(),
   }) {
     if (showSolution != null) {
@@ -916,13 +1089,321 @@ class _$ShowSolutionImpl implements ShowSolution {
 }
 
 abstract class ShowSolution implements QuestionsEvent {
-  const factory ShowSolution(
-          final int questionIndex, final List<String?> solutions) =
-      _$ShowSolutionImpl;
+  const factory ShowSolution(final String categoryId, final int questionIndex,
+      final List<String?> solution) = _$ShowSolutionImpl;
 
+  String get categoryId;
   int get questionIndex;
-  List<String?> get solutions;
+  List<String?> get solution;
   @JsonKey(ignore: true)
   _$$ShowSolutionImplCopyWith<_$ShowSolutionImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$GetCategoryListImplCopyWith<$Res> {
+  factory _$$GetCategoryListImplCopyWith(_$GetCategoryListImpl value,
+          $Res Function(_$GetCategoryListImpl) then) =
+      __$$GetCategoryListImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$GetCategoryListImplCopyWithImpl<$Res>
+    extends _$QuestionsEventCopyWithImpl<$Res, _$GetCategoryListImpl>
+    implements _$$GetCategoryListImplCopyWith<$Res> {
+  __$$GetCategoryListImplCopyWithImpl(
+      _$GetCategoryListImpl _value, $Res Function(_$GetCategoryListImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$GetCategoryListImpl implements GetCategoryList {
+  const _$GetCategoryListImpl();
+
+  @override
+  String toString() {
+    return 'QuestionsEvent.getCategoryList()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$GetCategoryListImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String categoryId) getQuestions,
+    required TResult Function() resetStatus,
+    required TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)
+        answerQuestion,
+    required TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)
+        showSolution,
+    required TResult Function() getCategoryList,
+    required TResult Function(String categoryId) getCategoryId,
+  }) {
+    return getCategoryList();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String categoryId)? getQuestions,
+    TResult? Function()? resetStatus,
+    TResult? Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
+        answerQuestion,
+    TResult? Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult? Function()? getCategoryList,
+    TResult? Function(String categoryId)? getCategoryId,
+  }) {
+    return getCategoryList?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String categoryId)? getQuestions,
+    TResult Function()? resetStatus,
+    TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
+        answerQuestion,
+    TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult Function()? getCategoryList,
+    TResult Function(String categoryId)? getCategoryId,
+    required TResult orElse(),
+  }) {
+    if (getCategoryList != null) {
+      return getCategoryList();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GetQuestions value) getQuestions,
+    required TResult Function(ResetStatus value) resetStatus,
+    required TResult Function(AnswerQuestion value) answerQuestion,
+    required TResult Function(ShowSolution value) showSolution,
+    required TResult Function(GetCategoryList value) getCategoryList,
+    required TResult Function(GetCategoryId value) getCategoryId,
+  }) {
+    return getCategoryList(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GetQuestions value)? getQuestions,
+    TResult? Function(ResetStatus value)? resetStatus,
+    TResult? Function(AnswerQuestion value)? answerQuestion,
+    TResult? Function(ShowSolution value)? showSolution,
+    TResult? Function(GetCategoryList value)? getCategoryList,
+    TResult? Function(GetCategoryId value)? getCategoryId,
+  }) {
+    return getCategoryList?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GetQuestions value)? getQuestions,
+    TResult Function(ResetStatus value)? resetStatus,
+    TResult Function(AnswerQuestion value)? answerQuestion,
+    TResult Function(ShowSolution value)? showSolution,
+    TResult Function(GetCategoryList value)? getCategoryList,
+    TResult Function(GetCategoryId value)? getCategoryId,
+    required TResult orElse(),
+  }) {
+    if (getCategoryList != null) {
+      return getCategoryList(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class GetCategoryList implements QuestionsEvent {
+  const factory GetCategoryList() = _$GetCategoryListImpl;
+}
+
+/// @nodoc
+abstract class _$$GetCategoryIdImplCopyWith<$Res> {
+  factory _$$GetCategoryIdImplCopyWith(
+          _$GetCategoryIdImpl value, $Res Function(_$GetCategoryIdImpl) then) =
+      __$$GetCategoryIdImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String categoryId});
+}
+
+/// @nodoc
+class __$$GetCategoryIdImplCopyWithImpl<$Res>
+    extends _$QuestionsEventCopyWithImpl<$Res, _$GetCategoryIdImpl>
+    implements _$$GetCategoryIdImplCopyWith<$Res> {
+  __$$GetCategoryIdImplCopyWithImpl(
+      _$GetCategoryIdImpl _value, $Res Function(_$GetCategoryIdImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? categoryId = null,
+  }) {
+    return _then(_$GetCategoryIdImpl(
+      null == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$GetCategoryIdImpl implements GetCategoryId {
+  const _$GetCategoryIdImpl(this.categoryId);
+
+  @override
+  final String categoryId;
+
+  @override
+  String toString() {
+    return 'QuestionsEvent.getCategoryId(categoryId: $categoryId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GetCategoryIdImpl &&
+            (identical(other.categoryId, categoryId) ||
+                other.categoryId == categoryId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, categoryId);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GetCategoryIdImplCopyWith<_$GetCategoryIdImpl> get copyWith =>
+      __$$GetCategoryIdImplCopyWithImpl<_$GetCategoryIdImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String categoryId) getQuestions,
+    required TResult Function() resetStatus,
+    required TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)
+        answerQuestion,
+    required TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)
+        showSolution,
+    required TResult Function() getCategoryList,
+    required TResult Function(String categoryId) getCategoryId,
+  }) {
+    return getCategoryId(categoryId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String categoryId)? getQuestions,
+    TResult? Function()? resetStatus,
+    TResult? Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
+        answerQuestion,
+    TResult? Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult? Function()? getCategoryList,
+    TResult? Function(String categoryId)? getCategoryId,
+  }) {
+    return getCategoryId?.call(categoryId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String categoryId)? getQuestions,
+    TResult Function()? resetStatus,
+    TResult Function(
+            String categoryId, int questionIndex, int selectedOptionIndex)?
+        answerQuestion,
+    TResult Function(
+            String categoryId, int questionIndex, List<String?> solution)?
+        showSolution,
+    TResult Function()? getCategoryList,
+    TResult Function(String categoryId)? getCategoryId,
+    required TResult orElse(),
+  }) {
+    if (getCategoryId != null) {
+      return getCategoryId(categoryId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GetQuestions value) getQuestions,
+    required TResult Function(ResetStatus value) resetStatus,
+    required TResult Function(AnswerQuestion value) answerQuestion,
+    required TResult Function(ShowSolution value) showSolution,
+    required TResult Function(GetCategoryList value) getCategoryList,
+    required TResult Function(GetCategoryId value) getCategoryId,
+  }) {
+    return getCategoryId(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GetQuestions value)? getQuestions,
+    TResult? Function(ResetStatus value)? resetStatus,
+    TResult? Function(AnswerQuestion value)? answerQuestion,
+    TResult? Function(ShowSolution value)? showSolution,
+    TResult? Function(GetCategoryList value)? getCategoryList,
+    TResult? Function(GetCategoryId value)? getCategoryId,
+  }) {
+    return getCategoryId?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GetQuestions value)? getQuestions,
+    TResult Function(ResetStatus value)? resetStatus,
+    TResult Function(AnswerQuestion value)? answerQuestion,
+    TResult Function(ShowSolution value)? showSolution,
+    TResult Function(GetCategoryList value)? getCategoryList,
+    TResult Function(GetCategoryId value)? getCategoryId,
+    required TResult orElse(),
+  }) {
+    if (getCategoryId != null) {
+      return getCategoryId(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class GetCategoryId implements QuestionsEvent {
+  const factory GetCategoryId(final String categoryId) = _$GetCategoryIdImpl;
+
+  String get categoryId;
+  @JsonKey(ignore: true)
+  _$$GetCategoryIdImplCopyWith<_$GetCategoryIdImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

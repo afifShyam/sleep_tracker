@@ -5,7 +5,9 @@ import 'package:sleep_tracker/src/index.dart';
 import 'package:sleep_tracker/src/screen/info/question_start_page.dart';
 
 class QuestionPage extends StatefulWidget {
-  const QuestionPage({super.key});
+  final String categoryId;
+
+  const QuestionPage({super.key, required this.categoryId});
 
   @override
   State<QuestionPage> createState() => _QuestionPageState();
@@ -25,7 +27,7 @@ class _QuestionPageState extends State<QuestionPage> {
         ),
         leading: IconButton(
           onPressed: () {
-            context.read<QuestionsBloc>().add(ResetStatus());
+            context.read<QuestionsBloc>().add(const ResetStatus());
             QuestionStartPage.of(context).exit(context);
           },
           icon: const Icon(Icons.arrow_back_ios_new),
@@ -34,6 +36,12 @@ class _QuestionPageState extends State<QuestionPage> {
       body: BlocConsumer<QuestionsBloc, QuestionsState>(
         listener: (context, state) {},
         builder: (context, state) {
+          final questions = state.categoryQuestions[widget.categoryId] ?? [];
+          final userAnswers =
+              state.categoryUserAnswers[widget.categoryId] ?? {};
+          final shownSolutions =
+              state.categoryShownSolutions[widget.categoryId] ?? {};
+
           if (state.questionStatus == QuestionStatus.error) {
             return const Center(child: Text('Error loading questions'));
           } else if (state.questionStatus == QuestionStatus.loading) {
@@ -42,16 +50,15 @@ class _QuestionPageState extends State<QuestionPage> {
 
           return PageView.builder(
             controller: _pageController,
-            itemCount: state.questions.length + 1,
+            itemCount: questions.length + 1,
             itemBuilder: (context, index) {
-              if (index == state.questions.length) {
+              if (index == questions.length) {
                 // Summary Page
-                return _buildSummaryPage(context, state);
+                return _buildSummaryPage(context, questions, userAnswers);
               }
 
-              final question = state.questions[index];
-              final userAnswer = state.userAnswers[index];
-              final shownSolutions = state.shownSolutions[index];
+              final question = questions[index];
+              final userAnswer = userAnswers[index];
               final optionLabels = ['A', 'B', 'C', 'D'];
 
               return Padding(
@@ -73,7 +80,8 @@ class _QuestionPageState extends State<QuestionPage> {
                       return GestureDetector(
                         onTap: () {
                           context.read<QuestionsBloc>().add(
-                                AnswerQuestion(index, optionIndex),
+                                AnswerQuestion(
+                                    widget.categoryId, index, optionIndex),
                               );
                         },
                         child: Container(
@@ -137,7 +145,7 @@ class _QuestionPageState extends State<QuestionPage> {
                       );
                     }),
                     const SizedBox(height: 24.0),
-                    if (shownSolutions != null)
+                    if (shownSolutions[index] != null)
                       Container(
                         padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
@@ -155,10 +163,10 @@ class _QuestionPageState extends State<QuestionPage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            ...List.generate(shownSolutions.length,
+                            ...List.generate(shownSolutions[index]!.length,
                                 (solutionIndex) {
                               return Text(
-                                '${optionLabels[solutionIndex]}: ${shownSolutions[solutionIndex]}',
+                                '${optionLabels[solutionIndex]}: ${shownSolutions[index]![solutionIndex]}',
                                 style: const TextStyle(color: Colors.green),
                               );
                             }),
@@ -188,7 +196,7 @@ class _QuestionPageState extends State<QuestionPage> {
                             },
                             child: const Text('Previous'),
                           ),
-                        if (index < state.questions.length - 1)
+                        if (index < questions.length - 1)
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blueAccent,
@@ -219,9 +227,8 @@ class _QuestionPageState extends State<QuestionPage> {
     );
   }
 
-  Widget _buildSummaryPage(BuildContext context, QuestionsState state) {
-    final userAnswers = state.userAnswers;
-    final questions = state.questions;
+  Widget _buildSummaryPage(BuildContext context, List<QuestionModel> questions,
+      Map<int, int?> userAnswers) {
     final optionLabels = ['A', 'B', 'C', 'D'];
 
     return Padding(
@@ -244,9 +251,29 @@ class _QuestionPageState extends State<QuestionPage> {
 
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'Q${questionIndex + 1}: ${question.question}\nYour answer: ${optionLabels[userAnswerIndex!]} - ${question.answerType[userAnswerIndex]}',
-                style: const TextStyle(fontSize: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Q${questionIndex + 1}: ${question.question}\nAnswer: ${optionLabels[userAnswerIndex!]} - ${question.answerType[userAnswerIndex]}',
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                  Text.rich(
+                    TextSpan(
+                      text: 'Solution: ',
+                      style: TextStyleST.textStyle.interText.copyWith(
+                        fontSize: 16.0,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: question.solutions[userAnswerIndex],
+                          style: TextStyleST.textStyle.interText
+                              .copyWith(fontSize: 16.0, color: STColor.green),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             );
           }),
