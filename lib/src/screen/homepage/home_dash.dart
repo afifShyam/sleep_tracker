@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -91,48 +90,48 @@ class HomePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton.icon(
-                  icon: Transform.rotate(
-                      angle: -10,
-                      child: const Icon(
-                        Icons.mode_night_outlined,
-                      )),
-                  onPressed: () {},
-                  label: Text(
-                    'Sleep',
-                    style: TextStyleST.textStyle.button,
-                  ),
-                  style: ButtonStyle(
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 30.w),
-                ElevatedButton.icon(
-                  icon: const Icon(
-                    Icons.wb_sunny_sharp,
-                  ),
-                  onPressed: () {},
-                  label: Text(
-                    'Awake',
-                    style: TextStyleST.textStyle.button,
-                  ),
-                  style: ButtonStyle(
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     ElevatedButton.icon(
+            //       icon: Transform.rotate(
+            //           angle: -10,
+            //           child: const Icon(
+            //             Icons.mode_night_outlined,
+            //           )),
+            //       onPressed: () {},
+            //       label: Text(
+            //         'Sleep',
+            //         style: TextStyleST.textStyle.button,
+            //       ),
+            //       style: ButtonStyle(
+            //         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            //           RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(7),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //     SizedBox(width: 30.w),
+            //     ElevatedButton.icon(
+            //       icon: const Icon(
+            //         Icons.wb_sunny_sharp,
+            //       ),
+            //       onPressed: () {},
+            //       label: Text(
+            //         'Awake',
+            //         style: TextStyleST.textStyle.button,
+            //       ),
+            //       style: ButtonStyle(
+            //         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            //           RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(7),
+            //           ),
+            //         ),
+            //       ),
+            //     )
+            //   ],
+            // ),
 
             //Switch button to daily and weekend
             // BlocBuilder<StatisticBloc, StatisticState>(

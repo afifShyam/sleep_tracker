@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -130,6 +132,13 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  static bool userInteracted = false; // Flag to track user interaction
+  static final StreamController<Map<String, dynamic>>
+      _notificationStreamController =
+      StreamController<Map<String, dynamic>>.broadcast();
+  static Stream<Map<String, dynamic>> get notificationStream =>
+      _notificationStreamController.stream;
+
   static Future<void> initialize() async {
     // Android settings
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -143,21 +152,31 @@ class NotificationService {
       requestSoundPermission: true,
     );
 
-    // Request permissions for Android
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestExactAlarmsPermission();
+    // Request permissions for Android Notification
+    final androidFlutterLocalNotificationsPlugin =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    androidFlutterLocalNotificationsPlugin
+        ?.requestNotificationsPermission()
+        .then((granted) {
+      androidFlutterLocalNotificationsPlugin
+          .requestExactAlarmsPermission()
+          .then((granted) {});
+    });
 
     // Request permissions for iOS
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
+    final iosFlutterLocalNotificationsPlugin =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>();
+    iosFlutterLocalNotificationsPlugin
         ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+      alert: true,
+      badge: true,
+      sound: true,
+    )
+        .then((granted) {
+      print('iOS notification permissions granted: $granted');
+    });
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
@@ -168,36 +187,22 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (x) async {
+        log('Notification action button pressed: ${x.actionId}');
+        userInteracted = true;
+
         final id = x.payload ?? '';
         final map = jsonDecode(id);
 
-        log('action buttong: ${map}');
-
-        if (map['type'] == 'bedtime') {
-          final now = DateTime.now();
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(GetDataFireBase.currentUserId)
-              .collection('sleep_data')
-              .doc(DateFormat('dd-MM-yyyy').format(DateTime.parse(map['date'])))
-              .set({
-            'bedtime': now,
-            'wakeup': '',
-            'timestamp': FieldValue.serverTimestamp(),
-          }, SetOptions(merge: true));
+        if (x.actionId == 'snooze') {
+          AlarmManager.triggerAlarm(
+            int.parse(map['id']),
+            map['title'],
+            map['body'],
+            DateTime.parse(map['date']).add(const Duration(minutes: 1)),
+            type: map['type'],
+          );
         } else {
-          final now = DateTime.now();
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(GetDataFireBase.currentUserId)
-              .collection('sleep_data')
-              .doc(DateFormat('dd-MM-yyyy').format(DateTime.parse(map['date'])))
-              .update({
-            // 'bedtime': now,
-            'wakeup': now,
-            // 'timestamp': FieldValue.serverTimestamp(),
-          });
-          // SetOptions(merge: true));
+          await handleNotificationAction(map, x.actionId);
         }
       },
     );
@@ -207,7 +212,10 @@ class NotificationService {
 
   static Future<void> showNotification(
       int id, String title, String body, DateTime date, String? type) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    userInteracted =
+        false; // Reset the flag each time a new notification is shown
+
+    AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'alarm_channel_id',
       'Alarm Notifications',
@@ -217,10 +225,53 @@ class NotificationService {
       enableLights: true,
       category: AndroidNotificationCategory.alarm,
       audioAttributesUsage: AudioAttributesUsage.alarm,
-      sound: RawResourceAndroidNotificationSound('alarm_sound'),
+      vibrationPattern: Int64List.fromList([
+        0,
+        2000,
+        500,
+        2000,
+        500,
+        2000,
+        500,
+        2000,
+        500,
+        2000,
+        500,
+        500,
+        2000,
+        500,
+        2000,
+        500,
+        500,
+        2000,
+        500,
+        2000,
+        500,
+      ]),
+      ongoing: true,
+      ticker: 'Alarm notification',
+      sound: const RawResourceAndroidNotificationSound('alarm_sound'),
       actions: [
-        AndroidNotificationAction('snooze', 'Snooze',
-            inputs: [AndroidNotificationActionInput()])
+        const AndroidNotificationAction(
+          'snooze',
+          'Snooze',
+          icon: DrawableResourceAndroidBitmap('alarm_icon_notification'),
+          showsUserInterface: true,
+        ),
+        if (type == 'bedtime')
+          const AndroidNotificationAction(
+            'bedtime',
+            'Sleep',
+            icon: DrawableResourceAndroidBitmap('alarm_icon_notification'),
+            showsUserInterface: true,
+          )
+        else if (type == 'wakeup')
+          const AndroidNotificationAction(
+            'wakeup',
+            'Wakeup',
+            icon: DrawableResourceAndroidBitmap('alarm_icon_notification'),
+            showsUserInterface: true,
+          ),
       ],
     );
 
@@ -232,22 +283,62 @@ class NotificationService {
       sound: 'alarm_sound.mp3',
     );
 
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+    NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iosPlatformChannelSpecifics,
     );
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(id, title, body,
-        tz.TZDateTime.from(date, tz.local), platformChannelSpecifics,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        // androidScheduleMode: AndroidScheduleMode.alarmClock,
-        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
-        payload:
-            '{"id":"$id","title":"$title","body":"$body", "date":"$date", "type":"$type"}');
+    // Debug logging
+    print('Scheduling notification with ID $id at $date , $type');
 
-    //Example of JsonEncode
-    // {"id":"d","title":"titlell","body":"mantap"}
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      title,
+      body,
+      tz.TZDateTime.from(date, tz.local),
+      platformChannelSpecifics,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      payload:
+          '{"id":"$id","title":"$title","body":"$body", "date":"$date", "type":"$type"}',
+    );
+
+    // Trigger the stream with the notification details
+    _notificationStreamController.add({
+      'id': id,
+      'title': title,
+      'body': body,
+      'date': date,
+      'type': type,
+    });
+  }
+
+  static Future<void> handleNotificationAction(
+      Map<String, dynamic> map, String? actionId) async {
+    final now = DateTime.now();
+    if (map['type'] == 'bedtime' && actionId == 'bedtime') {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(GetDataFireBase.currentUserId)
+          .collection('sleep_data')
+          .doc(DateFormat('dd-MM-yyyy').format(DateTime.parse(map['date'])))
+          .set({
+        'bedtime': now,
+        'wakeup': '',
+        'timestamp': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } else if (map['type'] == 'wakeup' && actionId == 'wakeup') {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(GetDataFireBase.currentUserId)
+          .collection('sleep_data')
+          .doc(DateFormat('dd-MM-yyyy').format(DateTime.parse(map['date'])))
+          .update({
+        'wakeup': now,
+      });
+    }
   }
 }
 
@@ -255,5 +346,6 @@ class AlarmManager {
   static void triggerAlarm(int id, String title, String body, DateTime dateTime,
       {String? type}) {
     NotificationService.showNotification(id, title, body, dateTime, type);
+    print('Scheduling notification with ID $id at $dateTime , $type');
   }
 }
